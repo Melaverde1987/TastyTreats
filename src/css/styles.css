@@ -1,0 +1,58 @@
+@import url('./general/modern-normalize.css');
+@import url('./general/variables.css');
+@import url('./general/reset.css');
+@import url('./general/helpers.css');
+
+@import url('./components/buttons.css');
+@import url('./components/forms.css');
+@import url('./fonts.css');
+
+@import url('./partials/header.css');
+@import url('./partials/hero.css');
+@import url('./partials/hero-favorites.css');
+@import url('./partials/recipes.css');
+@import url('./partials/aside.css');
+@import url('./partials/cards.css');
+@import url('./partials/cards-grid.css');
+@import url('./partials/slim-select.css');
+@import url('./partials/filters.css');
+@import url('./partials/popular-recipes.css');
+@import url('./partials/categories.css');
+@import url('./partials/modal-order.css');
+@import url('./partials/popup.css');
+@import url('./partials/cards-grid-favorites.css');
+@import url('./partials/favorites-default.css');
+@import url('./partials/spiner.css');
+
+/*
+BREAKPOINTS
+
+mobile default
+
+@media only screen and (min-width: 768px) {
+  tablet
+}
+
+@media only screen and (min-width: 1200px) {
+  desktop
+}
+
+якщо потрібні max
+@media only screen and (max-width: 767px) {
+  mobile
+}
+
+@media only screen and (max-width: 1199px) {
+  tablet
+}
+
+
+README
+1. папки css/components css/general не міняти нічого
+
+2. клас container налаттований для всіх розмірів
+
+3. на клас icon вже повішаний transition 
+
+4. в css/general/helpers є допоміжні класи
+*/

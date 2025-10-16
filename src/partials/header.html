@@ -1,0 +1,101 @@
+<header class="header">
+  <div class="container header-wrraper">
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="./index.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="./favorites.html" class="nav-link">Favorites</a>
+        </li>
+      </ul>
+    </nav>
+
+    <a href="./index.html" aria-label="logo">
+      <svg class="mobile-logo" width="83" height="18">
+        <use href="./img/sprite.svg#logo"></use>
+      </svg>
+    </a>
+
+    <ul class="desktop-right-part">
+      <li>
+        <a
+          href="tel:+380730000000"
+          aria-label="basket icon"
+          class="basket-link"
+        >
+          <svg class="mobile-menu-basket" width="24" height="24">
+            <use href="./img/sprite.svg#basket"></use>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <label class="switch">
+          <input type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </li>
+    </ul>
+  </div>
+
+  <!--
+    =============
+    MOBILE MENU
+    =============
+  -->
+  <!-- Mobile menu burger -->
+  <div class="mobile-wrraper container">
+    <svg class="mobile-logo" width="83" height="18">
+      <use href="./img/sprite.svg#logo"></use>
+    </svg>
+    <div class="mobile-burger-menu">
+      <ul class="mobile-right-part">
+        <li>
+          <svg class="mobile-menu-basket" width="24" height="24">
+            <use href="./img/sprite.svg#basket"></use>
+          </svg>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="menu-toggle-burger js-open-menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="mobile menu"
+          >
+            <svg class="mobile-menu-burger" width="32" height="32">
+              <use href="./img/sprite.svg#burger"></use>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="menu-container js-menu-container" id="mobile-menu">
+      <button type="button" class="menu-toggle-close js-close-menu">
+        <svg class="modal-menu-close" width="16" height="16">
+          <use
+            class="svg-modal"
+            width="16"
+            height="16"
+            href="./img/sprite.svg#cross-close-modal"
+          ></use>
+        </svg>
+      </button>
+
+      <ul class="mobile-menu">
+        <li><a class="link mobile-menu-item" href="./index.html">Home</a></li>
+        <li>
+          <a class="link mobile-menu-item" href="./favorites.html">Favorites</a>
+        </li>
+      </ul>
+      <!-- <svg class="" width="46px" height="20px">
+        <use class="svg-switch" href="../img/sprite.svg#switch"></use>
+        </svg> -->
+      <label class="switch">
+        <input type="checkbox" />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+</header>
