@@ -3,13 +3,21 @@ import {
   fetchAreas,
   fetchIngredients,
 } from './API/filters-api';
+
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { debounce } from 'debounce';
 import { createMarkupGridCard, defaultData } from './grid-card-fetch';
+
 import SlimSelect from 'slim-select';
-// import 'slim-select/dist/slimselect.css';
+import 'slim-select/styles';
 
 let currentlimit = 6;
+let allRecipes = null;
+
+let timeSlimSelect;
+let areaSlimSelect;
+let ingredientsSlimSelect;
+
 const loader = document.querySelector('.loader');
 
 const elements = {
@@ -21,6 +29,12 @@ const elements = {
   selectIngredientsButton: document.querySelector('#ingredients-select'),
 };
 
+/*
+====================
+EVENT LISTENERS
+====================
+*/
+
 if (elements.searchInput) {
   elements.searchInput.addEventListener(
     'input',
@@ -28,98 +42,217 @@ if (elements.searchInput) {
   );
 }
 
-function getQueryNameRecipes(e) {
-  loader.classList.remove('hidden');
-  const inpunValue = e.target.value.trim();
-  //console.log(inpunValue);
-  if (inpunValue === '') {
-    elements.searchInput.innerHTML = '';
-    elements.cards.innerHTML = defaultData(); // якщо написав і стер то вертається дефолтна розмітка
-    elements.resetButton.classList.add('js-reset-filters');
-    Notify.info('Your query is empty. Please try again');
-    return;
-  }
-  //console.dir(elements.resetButton);
-  elements.resetButton.classList.remove('js-reset-filters');
-  cardsWithFiltersData(inpunValue, currentlimit);
-}
-
 if (elements.resetButton) {
-  elements.resetButton.addEventListener('click', clearSearchInput);
+  elements.resetButton.addEventListener('click', clearFilters);
 }
 
-function clearSearchInput(e) {
-  if (e.target) {
-    elements.searchInput.value = '';
-    elements.cards.innerHTML = defaultData();
-    elements.resetButton.classList.add('js-reset-filters');
+if (elements.selectAreaButton) {
+  elements.selectAreaButton.addEventListener('change', getFilterArea);
+}
+
+if (elements.selectTimeButton) {
+  elements.selectTimeButton.addEventListener('change', getFilterTime);
+}
+
+if (elements.selectIngredientsButton) {
+  elements.selectIngredientsButton.addEventListener(
+    'change',
+    getFilterIngredients
+  );
+}
+
+/*
+====================
+COMMON FUNCTIONS
+====================
+*/
+
+function getCurrentLimit() {
+  if (window.innerWidth >= 1200) {
+    return 9;
   }
+
+  if (window.innerWidth >= 768) {
+    return 8;
+  }
+
+  return currentlimit;
 }
 
-async function cardsWithFiltersData(nameRecipe, currentlimit) {
+async function getAllRecipes() {
+  if (!allRecipes) {
+    allRecipes = await fetchCardsWithFilters();
+  }
+
+  return allRecipes;
+}
+
+function getActiveFilters() {
+  return {
+    name: elements.searchInput.value.trim().toLowerCase(),
+    area: elements.selectAreaButton.value.trim().toLowerCase(),
+    time: Number(elements.selectTimeButton.value),
+    ingredient: elements.selectIngredientsButton.value,
+  };
+}
+
+async function renderFilteredRecipes() {
   try {
-    if (window.screen.width >= 768 && window.screen.width < 1200) {
-      currentlimit = 8;
-    } else if (window.screen.width >= 1200) {
-      currentlimit = 9;
-    }
-    const result = await fetchCardsWithFilters(nameRecipe);
-    loader.classList.add('hidden');
+    loader.classList.remove('hidden');
 
-    const filterRecipes = result.filter(({ title }) =>
-      title.toLowerCase().includes(nameRecipe.toLowerCase())
-    );
-    //console.log(filterRecipes);
+    const recipes = await getAllRecipes();
+    const filters = getActiveFilters();
+    const limit = getCurrentLimit();
 
-    if (filterRecipes.length === 0) {
+    const filteredRecipes = recipes.filter(recipe => {
+      const matchesName =
+        !filters.name || recipe.title.toLowerCase().includes(filters.name);
+
+      const matchesArea =
+        !filters.area || recipe.area.toLowerCase().includes(filters.area);
+
+      const matchesTime = !filters.time || Number(recipe.time) <= filters.time;
+
+      const matchesIngredient =
+        !filters.ingredient ||
+        recipe.ingredients.some(
+          ingredient => ingredient.id === filters.ingredient
+        );
+
+      return matchesName && matchesArea && matchesTime && matchesIngredient;
+    });
+
+    if (filteredRecipes.length === 0) {
       elements.cards.innerHTML = defaultData();
-      // elements.resetButton.classList.add('js-reset-filters');
       Notify.warning('Nothing was found for your request!');
       return;
     }
 
-    const recipesOnPage = filterRecipes.splice(0, currentlimit);
-    //console.log(currentlimit);
-
-    // console.log(Math.ceil(filterRecipes.length/currentlimit));
-
-    // при реалізації пагінації можна опрацьювати filterRecipes після splice
+    const recipesOnPage = filteredRecipes.slice(0, limit);
 
     elements.cards.innerHTML = createMarkupGridCard(recipesOnPage);
-  } catch {
+
+    elements.resetButton.classList.remove('js-reset-filters');
+  } catch (error) {
+    console.error(error);
+
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
+  } finally {
+    loader.classList.add('hidden');
   }
 }
 
-// selectClass.forEach(item => {
-// new SlimSelect({
-//   select: elements.allFilters,
-//   settings: {
-//     showSearch: false,
-//   },
-// });
-// });
+/*
+====================
+SEARCH
+====================
+*/
+
+function getQueryNameRecipes(e) {
+  const inputValue = e.target.value.trim();
+
+  if (inputValue === '') {
+    cardsWithSearchData(inputValue, currentlimit);
+    Notify.info('Your query is empty. Please try again');
+    return;
+  }
+
+  cardsWithSearchData(inputValue, currentlimit);
+}
+
+async function cardsWithSearchData(nameRecipe, currentlimit) {
+  await renderFilteredRecipes();
+}
 
 /*
 ====================
-SELECT TIME
+AREA FILTER
+====================
+*/
+
+function getFilterArea(e) {
+  const selectValue = e.target.value.trim();
+
+  if (selectValue === '') return;
+
+  cardsWithFiltersAreaData(selectValue, currentlimit);
+}
+
+async function cardsWithFiltersAreaData(selectedArea, currentLimit) {
+  await renderFilteredRecipes();
+}
+
+/*
+====================
+TIME FILTER
+====================
+*/
+
+function getFilterTime(e) {
+  const selectValue = e.target.value.trim();
+
+  if (selectValue === '') return;
+
+  cardsWithFiltersTimeData(selectValue, currentlimit);
+}
+
+async function cardsWithFiltersTimeData(selectedTime, currentLimit) {
+  await renderFilteredRecipes();
+}
+
+/*
+====================
+INGREDIENT FILTER
+====================
+*/
+
+function getFilterIngredients(e) {
+  const selectValue = e.target.value.trim();
+
+  if (selectValue === '') return;
+
+  renderFilteredRecipes();
+}
+
+/*
+====================
+CLEAR FILTERS
+====================
+*/
+
+function clearFilters(e) {
+  if (e.target) {
+    elements.searchInput.value = '';
+
+    timeSlimSelect.setSelected(['']);
+    areaSlimSelect.setSelected(['']);
+    ingredientsSlimSelect.setSelected(['']);
+
+    elements.cards.innerHTML = defaultData();
+
+    elements.resetButton.classList.add('js-reset-filters');
+  }
+}
+
+/*
+====================
+SET SELECT TIME
 ====================
 */
 
 if (elements.selectTimeButton) {
-  let selectTime = [];
-  let startTime = 5;
-  const step = 5;
-  for (let i = 0; startTime <= 120; i++) {
-    selectTime.push(startTime);
-    startTime += step;
+  const selectTime = [];
+
+  for (let time = 5; time <= 160; time += 5) {
+    selectTime.push(time);
   }
-  //console.log(selectTime);
+
   elements.selectTimeButton.insertAdjacentHTML(
     'beforeend',
     createMarkupSelectTime(selectTime)
   );
-  new SlimSelect({
+
+  timeSlimSelect = new SlimSelect({
     select: elements.selectTimeButton,
     settings: {
       showSearch: false,
@@ -130,17 +263,24 @@ if (elements.selectTimeButton) {
 function createMarkupSelectTime(arr) {
   return arr
     .map(
-      time =>
-        `<option class="filter-select-option" value="${time}">${time} min</option>`
+      time => `
+        <option
+          class="filter-select-option"
+          value="${time}"
+        >
+          ${time} min
+        </option>
+      `
     )
     .join('');
 }
 
 /*
 ====================
-SELECT AREA
+SET SELECT AREA
 ====================
 */
+
 if (elements.selectAreaButton) {
   selectAreaData();
 }
@@ -148,11 +288,13 @@ if (elements.selectAreaButton) {
 async function selectAreaData() {
   try {
     const result = await fetchAreas();
+
     elements.selectAreaButton.insertAdjacentHTML(
       'beforeend',
       createMarkupSelectArea(result)
     );
-    new SlimSelect({
+
+    areaSlimSelect = new SlimSelect({
       select: elements.selectAreaButton,
       settings: {
         showSearch: false,
@@ -165,29 +307,30 @@ async function selectAreaData() {
 
 function createMarkupSelectArea(arr) {
   return arr
-    .map(
-      ({ _id, name }) =>
-        `<option class="filter-select-option" value=">${name}">${name}</option>`
-    )
+    .map(({ name }) => `<option value="${name}">${name}</option>`)
     .join('');
 }
 
 /*
 ====================
-SELECT INGREDIENTS
+SET SELECT INGREDIENTS
 ====================
 */
+
 if (elements.selectIngredientsButton) {
   selectIngredientsData();
 }
+
 async function selectIngredientsData() {
   try {
     const result = await fetchIngredients();
+
     elements.selectIngredientsButton.insertAdjacentHTML(
       'beforeend',
       createMarkupSelectIngredients(result)
     );
-    new SlimSelect({
+
+    ingredientsSlimSelect = new SlimSelect({
       select: elements.selectIngredientsButton,
       settings: {
         showSearch: false,
@@ -201,8 +344,14 @@ async function selectIngredientsData() {
 function createMarkupSelectIngredients(arr) {
   return arr
     .map(
-      ({ _id, name }) =>
-        `<option class="filter-select-option" value="${name}">${name}</option>`
+      ({ _id, name }) => `
+        <option
+          class="filter-select-option"
+          value="${_id}"
+        >
+          ${name}
+        </option>
+      `
     )
     .join('');
 }

@@ -1,0 +1,220 @@
+.popup {
+  position: fixed;
+  overflow-y: auto;
+  padding: 20px 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition:
+    opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  background-color: rgba(69, 64, 73, 0.3);
+
+  &.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .popup-wrapper {
+    border-radius: 15px;
+    background: $white;
+    padding-bottom: 40px;
+    padding-top: 40px;
+    position: relative;
+    max-width: 335px;
+
+    @media screen and (min-width: 768px) {
+      padding-top: 32px;
+      padding-bottom: 32px;
+      max-width: 600px;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      padding: 0;
+      background: transparent;
+      width: 24px;
+      height: 24px;
+
+      .close-window {
+        stroke: $colorTextDark;
+        pointer-events: none;
+      }
+    }
+
+    .recipe-name-tablet {
+      color: $colorTextDark;
+      font-size: 1.8rem;
+      font-weight: 600;
+      line-height: 1.22;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+
+      @media screen and (max-width: 767px) {
+        display: none;
+      }
+    }
+
+    .current-recipe-img {
+      width: 100%;
+      height: 295px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+
+      @media screen and (min-width: 768px) {
+        height: 250px;
+      }
+    }
+
+    .recipe-name {
+      font-size: 1.8rem;
+      font-weight: 600;
+      line-height: 1.3;
+
+      @media screen and (min-width: 768px) {
+        display: none;
+      }
+    }
+
+    .information {
+      display: flex;
+      margin-top: 14px;
+      align-items: center;
+      gap: 12px;
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-right: auto;
+
+        @media screen and (max-width: 767px) {
+          display: none;
+        }
+
+        .tag {
+          border-radius: 35px;
+          border: 1px solid $colorBorder;
+          padding: 8px 16px;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+
+      .current-rating {
+        color: $colorTextDark;
+        font-size: 1.4rem;
+        font-weight: 500;
+        line-height: 1.28;
+      }
+
+      .current-star {
+        display: flex;
+        gap: 5px;
+
+        .current-star-color {
+          fill: rgba(5, 5, 5, 0.1);
+
+          &.active-star {
+            fill: $colorAccent;
+          }
+        }
+      }
+
+      .cooking-time {
+        color: $colorTextDark;
+        font-size: 1.4rem;
+        font-weight: 500;
+        line-height: 1.28;
+        flex-shrink: 0;
+      }
+    }
+
+    .ingredients-list {
+      margin-top: 33px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .current-recipe {
+      color: rgba(5, 5, 5, 0.8);
+      line-height: 1.4;
+      margin-top: 24px;
+      font-size: 1.4rem;
+    }
+  }
+
+  .current-ingredients-item {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .current-ingredients-name {
+    color: var(--colorTextDark);
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.28;
+  }
+
+  .current-ingredients-quantity {
+    color: var(--colorTextGray);
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.28;
+  }
+
+  .current-type-dish {
+    display: flex;
+    gap: 8px;
+    margin-top: 40px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .current-type-dish {
+      display: none;
+    }
+  }
+
+  .type-item-text {
+    color: var(--colorTextDark);
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.16;
+  }
+
+  .btns-holder {
+    margin-top: 40px;
+    display: flex;
+    gap: 14px;
+  }
+
+  .btns-holder-text {
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .border::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    border: 0.5px solid var(--black);
+    opacity: 0.1;
+    top: 20px;
+  }
+}

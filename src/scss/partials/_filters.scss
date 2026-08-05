@@ -1,0 +1,85 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+
+  @media only screen and (min-width: 768px) {
+    gap: 16px;
+  }
+
+  .filter-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 14px / 2);
+
+    @media only screen and (min-width: 768px) {
+      width: calc(18% - 16px * 3 / 4);
+    }
+
+    &.search {
+      max-width: 100%;
+      width: 100%;
+
+      @media only screen and (min-width: 768px) {
+        width: calc(40% - 16px * 3 / 4);
+      }
+    }
+
+    &.ingredients {
+      max-width: 100%;
+      width: 100%;
+
+      @media only screen and (min-width: 768px) {
+        width: calc(24% - 16px * 3 / 4);
+      }
+    }
+  }
+
+  .filter-search {
+    padding-left: 48px;
+
+    &::placeholder {
+      background-repeat: no-repeat;
+      background-position: 0 center;
+    }
+
+    &:focus + .search-icon {
+      fill: $colorPrimary;
+    }
+  }
+
+  .search-icon {
+    position: absolute;
+    fill: $colorTextGray;
+    bottom: 16px;
+    left: 20px;
+  }
+
+  .reset-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    .reset-filters {
+      display: flex;
+      align-items: center;
+      font-size: 1.4rem;
+      color: rgba(5, 5, 5, 0.5);
+      column-gap: 6px;
+      pointer-events: auto;
+    }
+
+    .reset-filters {
+      &.js-reset-filters {
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      svg {
+        fill: $colorPrimary;
+        stroke: $colorPrimary;
+      }
+    }
+  }
+}

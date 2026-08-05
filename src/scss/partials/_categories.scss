@@ -1,0 +1,48 @@
+@use '../general/mixin' as mixin;
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  align-items: flex-start;
+
+  @media only screen and (min-width: 768px) {
+    row-gap: 30px;
+    flex-basis: calc(40% - 64px);
+  }
+
+  @media only screen and (min-width: 1200px) {
+    row-gap: 42px;
+  }
+
+  .categories-block {
+    height: 198px;
+    width: 100%;
+    overflow-y: scroll;
+
+    @include mixin.scrollbar(4px);
+
+    @media only screen and (min-width: 768px) {
+      height: 410px;
+    }
+  }
+
+  .categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .category-btn {
+      color: rgba(5, 5, 5, 0.3);
+      font-size: 1.4rem;
+      line-height: 1;
+      font-weight: 500;
+      background: transparent;
+
+      &:hover,
+      &:focus {
+        color: $colorPrimary;
+      }
+    }
+  }
+}

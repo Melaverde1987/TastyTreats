@@ -1,0 +1,22 @@
+@use 'variables' as *;
+
+@mixin scrollbar($size: 2px, $thumb: $colorAccent, $track: transparent) {
+  &::-webkit-scrollbar {
+    width: $size;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $track;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb;
+  }
+
+  /* for Firefox */
+  @-moz-document url-prefix() {
+    scrollbar-width: thin;
+    scrollbar-color: $colorAccent $colorAccent;
+  }
+}

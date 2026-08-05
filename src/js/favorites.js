@@ -2,8 +2,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { createMarkupGridCard } from './grid-card-fetch';
 
 const listRecipe = document.querySelector('.list-recipes');
-const btnFavorite = document.querySelectorAll('.button-favorite-recipes');
-const svgFavorite = document.querySelector('.icon-favorite-recipes');
+const btnFavorite = document.querySelectorAll('.btn-add-to-favorite');
+const svgFavorite = document.querySelector('.icon-heart');
 const favoritesContainer = document.getElementById('favorites-container');
 const favoritesCardContainer = document.querySelector(
   '.list-recipes-favorites'
@@ -17,8 +17,8 @@ if (listRecipe) {
 }
 
 function onClickFavorite(evt) {
-  if (evt.target.classList.contains('button-favorite-recipes')) {
-    evt.target.classList.toggle('icon-favorite-recipes-active');
+  if (evt.target.classList.contains('btn-add-to-favorite')) {
+    evt.target.classList.toggle('icon-heart-active');
     evt.target.children[0].classList.toggle('active');
     const name = evt.target.getAttribute('name');
 
@@ -39,14 +39,14 @@ function onClickFavorite(evt) {
       // Создаем объект для представления карточки в избранном
       const buttonFavorite = svgHeart
         .closest('.item-recipes')
-        .querySelector('.button-favorite-recipes');
+        .querySelector('.btn-add-to-favorite');
       const card = svgHeart.closest('.item-recipes');
       const titleElement = card.querySelector('.title-recipes');
       const title = titleElement ? titleElement.textContent : '';
       const description = card.querySelector(
         '.description-recipes'
       ).textContent;
-      const rating = card.querySelector('.rating-recipes').textContent;
+      const rating = card.querySelector('.rating-number').textContent;
       const thumb = card.querySelector('.img-recipes').src;
 
       const favoriteRecipe = {
@@ -93,8 +93,8 @@ function createMarkupGridCardLS(arr) {
     .map(({ _id, title, description, thumb }) => {
       return `<li class="item-recipes">
             <div class="wrap-recipes">
-              <button type="button" class="button-favorite-recipes" name="${_id}">
-                  <svg class="icon-favorite-recipes active" width="22" height="22">
+              <button type="button" class="btn-add-to-favorite" name="${_id}">
+                  <svg class="icon-heart active" width="22" height="22">
                     <use href="./sprite.svg#heart-favorite"></use>
                   </svg>
               </button>
@@ -105,25 +105,25 @@ function createMarkupGridCardLS(arr) {
                 width="335"
                 height="335"
               />
-              <div class="thumb-desc-recipes">
+              <div class="thumb-desc">
                 <h3 class="title-recipes">${title}</h3>
                 <p class="description-recipes">${description}</p>
-                <div class="thumb-btn-rating">
-                  <p class="rating-recipes">4.${getRandomInt(9)}</p>
-                  <div class="wrap-stars-rating">
-                    <svg class="icon-rating-recipes star">
+                <div class="rating">
+                  <p class="rating-number">4.${getRandomInt(9)}</p>
+                  <div class="stars">
+                    <svg class="icon-star">
                       <use href="./sprite.svg#rating-star"></use>
                     </svg>
-                    <svg class="icon-rating-recipes star">
+                    <svg class="icon-star">
                       <use href="./sprite.svg#rating-star"></use>
                     </svg>
-                    <svg class="icon-rating-recipes star">
+                    <svg class="icon-star">
                       <use href="./sprite.svg#rating-star"></use>
                     </svg>
                   </div>        
                   <button
                     type="button"
-                    class="btn btn-primary button-recipes"
+                    class="btn btn-primary btn-recipes"
                     data-modal-popup-open
                     id="${_id}"
                   >

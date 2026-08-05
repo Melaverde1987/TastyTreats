@@ -1,0 +1,116 @@
+@use 'mixin' as mixin;
+@use 'variables' as *;
+
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%;
+
+  @include mixin.scrollbar(6px);
+}
+
+::selection {
+  background: $colorAccent;
+  color: $white;
+}
+
+:focus-visible {
+  outline: $colorAccent dotted 2px;
+  outline-offset: 2px;
+}
+
+body {
+  font-family: $fontPrimary;
+  line-height: 1.4;
+  font-weight: 400;
+  color: $colorTextDark;
+  background-color: $light;
+  overflow-x: hidden;
+  width: 100%;
+  height: auto;
+  font-size: 1.6rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: currentColor;
+  text-decoration: none;
+  transition: all 400ms $cubicTransition;
+
+  &:hover,
+  &:focus {
+    color: $colorPrimary;
+  }
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+input,
+input::placeholder,
+textarea,
+textarea::placeholder {
+  font-size: 14px;
+  line-height: 1.21;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 16px;
+  }
+
+  &:focus {
+    outline: 1px solid $colorAccent;
+  }
+}
+
+/* Chrome/Safari */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  /* перекриваємо фон автозаповнення */
+  -webkit-box-shadow: 0 0 0 1000px $white inset !important;
+  box-shadow: 0 0 0 1000px $white inset !important;
+
+  /* колір тексту та каретки */
+  -webkit-text-fill-color: $black !important;
+  caret-color: $black;
+
+  /* хак проти «блимання» жовтим */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px $white inset !important;
+  box-shadow: 0 0 0 1000px $white inset !important;
+}
+
+/* Firefox */
+input:autofill,
+textarea:autofill {
+  background-color: $white !important;
+  color: $black;
+}

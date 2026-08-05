@@ -1,0 +1,54 @@
+@import 'variables';
+
+.btn {
+  padding: 14px 20px;
+  color: $white;
+  border: 1px solid transparent;
+  font-size: clamp(1.4rem, 2.5vw, 1.6rem);
+  border-radius: 15px;
+  font-weight: 500;
+
+  @media screen and (min-width: 768px) {
+    padding: 14px 28px;
+  }
+}
+
+.btn-primary {
+  background: $colorPrimary;
+  color: $white;
+  border: 1px solid $colorPrimary;
+  transition: color 400ms $cubicTransition;
+
+  &:hover,
+  &:focus {
+    color: $colorTextDark;
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid $colorPrimary;
+  color: $colorTextDark;
+  transition: all 400ms $cubicTransition;
+
+  &:hover,
+  &:focus {
+    border: 1px solid $colorPrimary;
+    color: $white;
+    background-color: $colorPrimary;
+  }
+}
+
+.btn-outline-gray {
+  background-color: transparent;
+  border: 1px solid $colorBorder;
+  color: $colorTextGray;
+  transition: all 400ms $cubicTransition;
+
+  &:hover,
+  &:focus {
+    border-color: $colorPrimary;
+    color: $white;
+    background-color: $colorPrimary;
+  }
+}

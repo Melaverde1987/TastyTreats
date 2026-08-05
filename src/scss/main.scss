@@ -1,0 +1,19 @@
+@import 'general/modern-normalize';
+@import 'general/reset';
+@import 'general/variables';
+@import 'general/fonts';
+@import 'general/helpers';
+@import 'general/buttons';
+@import 'general/forms';
+
+@import 'partials/header';
+@import 'partials/hero';
+@import 'partials/recipes';
+@import 'partials/aside';
+@import 'partials/popular-recipes';
+@import 'partials/categories';
+@import 'partials/cards';
+@import 'partials/filters';
+@import 'partials/cards-grid';
+@import 'partials/pagination';
+@import 'partials/popup';

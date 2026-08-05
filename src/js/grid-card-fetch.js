@@ -13,7 +13,6 @@ let currentPage = 1;
 if (elements.cards) {
   setCardsLimit();
 }
-//setCardsLimit();
 
 function setCardsLimit() {
   if (window.screen.width >= 768 && window.screen.width < 1200) {
@@ -58,8 +57,8 @@ function createMarkupGridCard(arr) {
       const ratingNumber = rating.toFixed(1);
       return `<li class="item-recipes">
             <div class="wrap-recipes">
-              <button type="button" class="button-favorite-recipes" name="${_id}">
-                  <svg class="icon-favorite-recipes" width="22" height="22">
+              <button type="button" class="btn-add-to-favorite" name="${_id}">
+                  <svg class="icon-heart" width="22" height="22">
                     <use href="./sprite.svg#heart-favorite"></use>
                   </svg>
               </button>
@@ -70,17 +69,17 @@ function createMarkupGridCard(arr) {
                 width="335"
                 height="335"
               />
-              <div class="thumb-desc-recipes">
+              <div class="thumb-desc">
                 <h3 class="title-recipes">${title}</h3>
                 <p class="description-recipes">${description}</p>
-                <div class="thumb-btn-rating">
-                  <p class="rating-recipes">${ratingNumber}</p>
-                  <div class="wrap-stars-rating">
+                <div class="rating">
+                  <p class="rating-number">${ratingNumber}</p>
+                  <div class="stars">
                     ${markupRatingStars(roundRating)}
                   </div>        
                   <button
                     type="button"
-                    class="btn btn-primary button-recipes"
+                    class="btn btn-primary btn-recipes"
                     data-modal-popup-open
                     id="${_id}"
                   >
@@ -95,104 +94,14 @@ function createMarkupGridCard(arr) {
 }
 
 function markupRatingStars(roundRating) {
-  switch (roundRating) {
-    case 1:
-      return `<svg class="icon-rating-recipes star">
+  return Array.from(
+    { length: 5 },
+    (_, index) => `
+    <svg class="icon-star${index < roundRating ? ' star' : ''}">
       <use href="./sprite.svg#rating-star"></use>
     </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 2:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 3:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 4:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 5:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    default:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-  }
+  `
+  ).join('');
 }
 
 export {

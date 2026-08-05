@@ -3,11 +3,9 @@ import { swiper } from './swiper';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const elements = {
-  heroCard: document.querySelector('.hero-card'),
+  heroCard: document.querySelector('.swiper-hero'),
   swiperWrapper: document.querySelector('.swiper-wrapper'),
 };
-
-//console.log(elements);
 
 if (elements.heroCard) {
   heroData();
@@ -18,9 +16,9 @@ async function heroData() {
     const result = await fetchEvents();
     elements.swiperWrapper.innerHTML = createMarkupEvents(result);
   } catch {
-    //console.log('err');
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
+
   // Відмальовка HTML колекції
   function createMarkupEvents(arr) {
     return arr
@@ -36,24 +34,23 @@ async function heroData() {
         }) => `<div class="swiper-slide">
           <div class="swiper-item">
             <div class="chief">
-              <img
-                class="chief-photo"
+              <img class="chief-photo"
                 src="${imgWebpUrl}"
                 alt="${name}"
               />
             </div>
             <div class="dish">
-              <img
-                class="dish-photo"
+              <img class="dish-photo"
                 src="${previewWebpUrl}"
-                alt="dish"
+                alt="${nameTopic}"
               />
-              <h2 class="dish-name">${nameTopic}</h2>
-              <p class="dish-area">${area}</p>
+              <div class="dish-text">
+                <h2 class="dish-name">${nameTopic}</h2>
+                <p class="dish-area">${area}</p>
+              </div>
             </div>
-            <div class="cuisine-preview">
-              <img
-                class="cuisine-preview-photo"
+            <div class="cuisine">
+              <img class="cuisine-photo"
                 src="${imgWebpUrlTopic}"
                 alt="Preview"
               />

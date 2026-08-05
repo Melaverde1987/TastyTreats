@@ -1,0 +1,152 @@
+.pagination-wrap {
+  display: flex;
+  width: 100%;
+  gap: 14px;
+  justify-content: center;
+
+  @media screen and (min-width: 768px) {
+    gap: 24px;
+  }
+
+  .pag-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: $colorTextDark;
+    border: 1px solid rgba(5, 5, 5, 0.3);
+
+    &:hover {
+      background-color: rgba(155, 181, 55, 0.6);
+      border: none;
+      outline: none;
+    }
+
+    &:active {
+      border: none;
+      background-color: rgba(155, 181, 55, 0.4);
+    }
+
+    &.btn-active {
+      background-color: $colorPrimary;
+      border: none;
+    }
+  }
+
+  .btns-back {
+    display: flex;
+    gap: 4px;
+
+    @media screen and (min-width: 768px) {
+      gap: 8px;
+    }
+
+    .pag-back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pag-start-btn,
+    .pag-back-btn {
+      background-color: $colorTextDark;
+      border: none;
+
+      &:hover {
+        background-color: rgba(5, 5, 5, 0.7);
+        outline: none;
+      }
+
+      &:active {
+        border: none;
+        background-color: rgba(5, 5, 5, 0.5);
+      }
+    }
+
+    .pag-arrow {
+      fill: $light;
+      opacity: 50%;
+      height: 14px;
+      width: auto;
+      transform: rotate(180deg);
+
+      &.double {
+        height: 22px;
+      }
+    }
+  }
+
+  .js-arrow,
+  .icon-heart {
+    pointer-events: none;
+  }
+
+  .btns-pages {
+    display: flex;
+    gap: 8px;
+
+    @media screen and (min-width: 768px) {
+      gap: 10px;
+    }
+  }
+
+  .btns-forward {
+    display: flex;
+    gap: 4px;
+
+    @media screen and (min-width: 768px) {
+      gap: 8px;
+    }
+
+    .pag-arrow {
+      fill: $light;
+      opacity: 50%;
+      height: 14px;
+      width: auto;
+
+      &.double {
+        height: 22px;
+      }
+    }
+  }
+
+  .pag-forward-btn,
+  .pag-end-btn {
+    background-color: $colorPrimary;
+    border: none;
+
+    &:hover {
+      background-color: rgba(155, 181, 55, 0.7);
+      outline: none;
+    }
+
+    &:active {
+      background-color: rgba(155, 181, 55, 0.4);
+    }
+  }
+
+  .btns-forward .js-arrow {
+    fill: $colorTextDark;
+  }
+
+  .additional-btn {
+    &:hover {
+      font-weight: 600;
+      font-size: 1.8rem;
+      line-height: 1.22;
+      color: $colorTextDark;
+      border: 1px solid rgba(5, 5, 5, 0.3);
+    }
+
+    @media screen and (min-width: 768px) {
+      display: flex;
+    }
+  }
+}

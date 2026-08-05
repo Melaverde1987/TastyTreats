@@ -4,7 +4,7 @@ import sprite from '../img/sprite.svg';
 
 const elements = document.querySelector('.popular-list');
 const popup = document.querySelector('[data-modal-popup]');
-const currentRecipe = document.querySelector('.current-vrapper');
+const currentRecipe = document.querySelector('.popup-wrapper');
 const body = document.querySelector('body');
 
 if (elements) {
@@ -52,7 +52,7 @@ function createMarkupPopular(arr) {
       alt="${title}"
     />
     <div class="popular-card">
-      <h3 class="popular-title">${title}</h3>
+      <h4 class="popular-title">${title}</h4>
       <p class="popular-text">
         ${description}
       </p>
@@ -90,19 +90,18 @@ function createMarkupPopup(arr) {
         <use href="${sprite}#cross-close-modal"></use>
       </svg>
     </button>
-    <h2 class="current-recipe-name-tablet">${arr.title}</h2>
+    <h2 class="recipe-name-tablet">${arr.title}</h2>
     <img
    class="current-recipe-img"
   src="${arr.thumb}"
   alt="${arr.title}"
  />
- <h2 class="current-recipe-name">${arr.title}</h2>
- <div class="current-information">
- <ul class="current-type-dish-tab">
+ <h2 class="recipe-name">${arr.title}</h2>
+ <div class="information">
+ <ul class="tags">
    ${arr.tags
      .map(
-       item =>
-         ` <li class="current-type-item"><p class="type-item-text">#${item}</p></li>`
+       item => ` <li class="tag"><p class="type-item-text">#${item}</p></li>`
      )
      .join('')} 
   </ul>
@@ -110,9 +109,9 @@ function createMarkupPopup(arr) {
   <ul class="current-star">
      ${markupRatingStarsPop(roundRating)}
    </ul>
-   <p class="current-cucing-time">${arr.time} min</p>
+   <p class="cooking-time">${arr.time} min</p>
     </div>
-    <ul class="current-ingredients-list">
+    <ul class="ingredients-list">
   ${arr.ingredients
     .map(
       ({ measure, name }) => `<li class="current-ingredients-item border">
@@ -126,17 +125,16 @@ function createMarkupPopup(arr) {
    <ul class="current-type-dish">
    ${arr.tags
      .map(
-       item =>
-         ` <li class="current-type-item"><p class="type-item-text">#${item}</p></li>`
+       item => ` <li class="tag"><p class="type-item-text">#${item}</p></li>`
      )
      .join('')} 
  </ul>
  <p class="current-recipe">
    ${arr.instructions}
  </p>
- <div class="custumer-choice">
-   <a href="" class="btn btn-primary custumer-choice-text">Add to favorite</a
-   ><a href="" class="btn btn-outline custumer-choice-text">Give a rating</a></div>
+ <div class="btns-holder">
+   <a href="" class="btn btn-primary btns-holder-text">Add to favorite</a
+   ><a href="" class="btn btn-outline btns-holder-text">Give a rating</a></div>
  </div>`;
 }
 function markupRatingStarsPop(roundRating) {

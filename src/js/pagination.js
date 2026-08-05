@@ -71,19 +71,19 @@ function markupBtnPagination(pages) {
   for (let i = 1; i <= pages; i += 1) {
     if (i === quantMobbtn && pages === quantMobbtn) {
       arrBtn.push(
-        `<button type="button" class="pag-page-btn pag-btn">${i}</button>`
+        `<button type="button" class="pag-btn pag-btn">${i}</button>`
       );
       continue;
     }
     // if (i === quantMobbtn && pages !== quantMobbtn) {
     //   arrBtn.push(
-    //     `<button type="button" class="pag-page-btn pag-btn additional-btn">...</button>`
+    //     `<button type="button" class="pag-btn pag-btn additional-btn">...</button>`
     //   );
     //   continue;
     // }
     else
       arrBtn.push(
-        `<button type="button" class="pag-page-btn pag-btn">${i}</button>`
+        `<button type="button" class="pag-btn pag-btn">${i}</button>`
       );
   }
   if (arrBtn.length <= quantMobbtn) {
@@ -93,7 +93,7 @@ function markupBtnPagination(pages) {
   arrBtn.splice(
     0,
     1,
-    `<button type="button" class="pag-page-btn pag-btn btn-active">1</button>`
+    `<button type="button" class="pag-btn pag-btn btn-active">1</button>`
   );
   const visualBtn = pages - (pages - quantMobbtn);
   const allBtn = arrBtn.slice(0, visualBtn);
@@ -143,8 +143,8 @@ function createMarkupGridCardPag(arr) {
       const ratingNumber = rating.toFixed(1);
       return `<li class="item-recipes">
             <div class="wrap-recipes">
-              <button type="button" class="button-favorite-recipes" name="${_id}">
-                  <svg class="icon-favorite-recipes" width="22" height="22">
+              <button type="button" class="btn-add-to-favorite" name="${_id}">
+                  <svg class="icon-heart" width="24" height="24">
                     <use href="./sprite.svg#heart-favorite"></use>
                   </svg>
               </button>
@@ -155,17 +155,17 @@ function createMarkupGridCardPag(arr) {
                 width="335"
                 height="335"
               />
-              <div class="thumb-desc-recipes">
+              <div class="thumb-desc">
                 <h3 class="title-recipes">${title}</h3>
                 <p class="description-recipes">${description}</p>
-                <div class="thumb-btn-rating">
-                  <p class="rating-recipes">${ratingNumber}</p>
-                  <div class="wrap-stars-rating">
+                <div class="rating">
+                  <p class="rating-number">${ratingNumber}</p>
+                  <div class="stars">
                     ${markupRatingStars(roundRating)}
                   </div>        
                   <button
                     type="button"
-                    class="btn btn-primary button-recipes"
+                    class="btn btn-primary btn-recipes"
                     data-modal-popup-open
                     id="${_id}"
                   >
@@ -180,104 +180,14 @@ function createMarkupGridCardPag(arr) {
 }
 
 function markupRatingStars(roundRating) {
-  switch (roundRating) {
-    case 1:
-      return `<svg class="icon-rating-recipes star">
+  return Array.from(
+    { length: 5 },
+    (_, index) => `
+    <svg class="icon-star${index < roundRating ? ' star' : ''}">
       <use href="./sprite.svg#rating-star"></use>
     </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 2:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 3:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 4:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 5:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    default:
-      return `<svg class="icon-rating-recipes star">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="icon-rating-recipes">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-  }
+  `
+  ).join('');
 }
 
 function handlerBattonArrow(e) {
@@ -357,13 +267,11 @@ function btnPageMarkupBack() {
   ) {
     if (i === Number(currentActiveBtn.textContent)) {
       arrBtn.push(
-        `<button type="button" class="pag-page-btn pag-btn btn-active">${i}</button>`
+        `<button type="button" class="pag-btn pag-btn btn-active">${i}</button>`
       );
       continue;
     }
-    arrBtn.push(
-      `<button type="button" class="pag-page-btn pag-btn">${i}</button>`
-    );
+    arrBtn.push(`<button type="button" class="pag-btn pag-btn">${i}</button>`);
   }
   //console.log(arrBtn);
   return arrBtn.join('');
@@ -381,12 +289,12 @@ function btnPageMarkupFront() {
     ) {
       if (i === Number(currentActiveBtn.textContent)) {
         arrBtn.push(
-          `<button type="button" class="pag-page-btn pag-btn btn-active">${i}</button>`
+          `<button type="button" class="pag-btn pag-btn btn-active">${i}</button>`
         );
         continue;
       } else {
         arrBtn.push(
-          `<button type="button" class="pag-page-btn pag-btn">${i}</button>`
+          `<button type="button" class="pag-btn pag-btn">${i}</button>`
         );
       }
     }
@@ -397,19 +305,17 @@ function btnPageMarkupFront() {
 function markupEndBattons(quantityPages) {
   const arrBtn = [];
   for (let i = quantityPages - (quantMobbtn - 1); i <= quantityPages; i += 1) {
-    arrBtn.push(
-      `<button type="button" class="pag-page-btn pag-btn">${i}</button>`
-    );
+    arrBtn.push(`<button type="button" class="pag-btn pag-btn">${i}</button>`);
   }
   // arrBtn.splice(
   //   0,
   //   1,
-  //   `<button type="button" class="pag-page-btn pag-btn additional-btn">...</button>`
+  //   `<button type="button" class="pag-btn pag-btn additional-btn">...</button>`
   // );
   arrBtn.splice(
     quantMobbtn - 1,
     1,
-    `<button type="button" class="pag-page-btn pag-btn btn-active">${quantityPages}</button>`
+    `<button type="button" class="pag-btn pag-btn btn-active">${quantityPages}</button>`
   );
   const endSetPages = arrBtn.join('');
   return endSetPages;
