@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tasty Treats</title>
     
-    <script type="module" crossorigin src="/TastyTreats/assets/favorites-04b3ce2a.js"></script>
-    <link rel="stylesheet" href="/TastyTreats/assets/favorites-572943f4.css">
+    <script type="module" crossorigin src="/TastyTreats/assets/favorites-358b3a8b.js"></script>
+    <link rel="stylesheet" href="/TastyTreats/assets/favorites-697a735c.css">
   </head>
   <body>
     <header class="header">
-  <div class="container header-wrraper">
+  <div class="container">
     <nav class="nav">
       <ul class="nav-list">
         <li class="nav-item">
@@ -23,92 +23,51 @@
       </ul>
     </nav>
 
-    <a href="./index.html" aria-label="logo">
-      <svg class="mobile-logo" width="83" height="18">
-        <use href="/TastyTreats/assets/sprite-a10621af.svg#logo"></use>
+    <a href="./index.html" aria-label="logo Tasty Treats" class="logo">
+      <svg width="95" height="22">
+        <use href="/TastyTreats/assets/sprite-28368b95.svg#logo"></use>
       </svg>
     </a>
 
-    <ul class="desktop-right-part">
-      <li>
-        <a
-          href="tel:+380730000000"
-          aria-label="basket icon"
-          class="basket-link"
-        >
-          <svg class="mobile-menu-basket" width="24" height="24">
-            <use href="/TastyTreats/assets/sprite-a10621af.svg#basket"></use>
-          </svg>
-        </a>
-      </li>
-      <li>
-        <label class="switch">
-          <input type="checkbox" />
-          <span class="slider"></span>
-        </label>
-      </li>
-    </ul>
+    <label class="switch">
+      <input type="checkbox" name="theme-switcher" />
+      <span class="slider"></span>
+    </label>
+
+    <button
+      type="button"
+      class="menu-toggle-burger js-open-menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="mobile menu"
+    >
+      <svg class="mobile-menu-burger" width="32" height="32">
+        <use href="/TastyTreats/assets/sprite-28368b95.svg#burger"></use>
+      </svg>
+    </button>
   </div>
 
-  <!--
-    =============
-    MOBILE MENU
-    =============
-  -->
   <!-- Mobile menu burger -->
-  <div class="mobile-wrraper container">
-    <svg class="mobile-logo" width="83" height="18">
-      <use href="/TastyTreats/assets/sprite-a10621af.svg#logo"></use>
-    </svg>
-    <div class="mobile-burger-menu">
-      <ul class="mobile-right-part">
-        <li>
-          <svg class="mobile-menu-basket" width="24" height="24">
-            <use href="/TastyTreats/assets/sprite-a10621af.svg#basket"></use>
-          </svg>
-        </li>
-        <li>
-          <button
-            type="button"
-            class="menu-toggle-burger js-open-menu"
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-            aria-label="mobile menu"
-          >
-            <svg class="mobile-menu-burger" width="32" height="32">
-              <use href="/TastyTreats/assets/sprite-a10621af.svg#burger"></use>
-            </svg>
-          </button>
-        </li>
-      </ul>
-    </div>
+  <div class="mobile-menu js-menu-container" id="mobile-menu">
+    <button type="button" class="menu-toggle-close js-close-menu">
+      <svg class="modal-menu-close" width="32" height="32">
+        <use href="/TastyTreats/assets/sprite-28368b95.svg#cross-close-modal"></use>
+      </svg>
+    </button>
 
-    <div class="menu-container js-menu-container" id="mobile-menu">
-      <button type="button" class="menu-toggle-close js-close-menu">
-        <svg class="modal-menu-close" width="16" height="16">
-          <use
-            class="svg-modal"
-            width="16"
-            height="16"
-            href="/TastyTreats/assets/sprite-a10621af.svg#cross-close-modal"
-          ></use>
-        </svg>
-      </button>
+    <ul class="nav-mobile">
+      <li>
+        <a class="nav-mobile-link" href="./index.html">Home</a>
+      </li>
+      <li>
+        <a class="nav-mobile-link" href="./favorites.html">Favorites</a>
+      </li>
+    </ul>
 
-      <ul class="mobile-menu">
-        <li><a class="link mobile-menu-item" href="./index.html">Home</a></li>
-        <li>
-          <a class="link mobile-menu-item" href="./favorites.html">Favorites</a>
-        </li>
-      </ul>
-      <!-- <svg class="" width="46px" height="20px">
-        <use class="svg-switch" href="../img/sprite.svg#switch"></use>
-        </svg> -->
-      <label class="switch">
-        <input type="checkbox" />
-        <span class="slider"></span>
-      </label>
-    </div>
+    <label class="switch mobile">
+      <input type="checkbox" name="theme-switcher" />
+      <span class="slider"></span>
+    </label>
   </div>
 </header>
 
