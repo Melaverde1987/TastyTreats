@@ -1,4 +1,5 @@
 @use 'mixin' as mixin;
+@use 'variables' as *;
 
 label {
   font-size: 1.4rem;
@@ -19,6 +20,11 @@ input {
     @media only screen and (min-width: 768px) {
       font-size: 1.6rem;
     }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 5px $colorPrimary !important;
   }
 }
 
@@ -58,18 +64,27 @@ textarea {
 }
 
 .ss-content {
+  --ss-font-color: $colorTextDark;
+
   .ss-list {
     @include mixin.scrollbar(4px);
 
     .ss-option {
       font-size: 1.6rem;
-      color: rgba(5, 5, 5, 0.5) !important;
+      color: $colorTextDark;
       background: $white !important;
       padding: 8px 18px !important;
 
+      &.ss-selected {
+        color: $colorTextDark !important;
+      }
+
+      &.ss-disabled {
+        color: rgba(5, 5, 5, 0.5) !important;
+      }
+
       &.filter-select-option {
         font-weight: 500;
-        color: $colorTextDark !important;
       }
 
       &:hover {

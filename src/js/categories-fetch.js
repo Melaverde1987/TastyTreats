@@ -3,45 +3,65 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { createMarkupGridCard } from './grid-card-fetch';
 import { fetchCards } from './API/grid-cards-api';
 
-const gallery = document.querySelector('.list-recipes');
-
-const categoryContainer = document.querySelector('.categories');
+const cardsGrid = document.querySelector('.list-recipes');
 const categoriesAll = document.querySelector('.categories-list');
-export const btnAllCategories = document.querySelector('.btn-all-categories');
-const blokCategory = document.querySelector('.categories-block');
-const btnCategory = document.querySelector('.category-btn');
-const categoriesItem = document.querySelector('.categories-element');
-const CATEGORIES_ENDPOINT = '/categories';
+const btnAllCategories = document.querySelector('.btn-all-categories');
+const loader = document.querySelector('.loader');
 
-// categoriesData();
-// async function categoriesData() {
-//   try {
-//     const result = await fetchCategories();
-//     const categoriesList = createMarkupCategories(result);
-//     categoriesAll.insertAdjacentHTML('beforeend', categoriesList);
-//   } catch {
-//     Notify.failure('Oops! Something went wrong! Try reloading the page!');
-//   }
+btnAllCategories.addEventListener('click', onAllRecipes);
+categoriesAll.addEventListener('click', onSearchbyCategory);
 
-// }
+async function onAllRecipes() {
+  try {
+    loader.classList.remove('hidden');
+    const data = await getDataArr();
+    cardsGrid.innerHTML = createMarkupGridCard(data);
+  } catch (error) {
+  } finally {
+    loader.classList.add('hidden');
+  }
+}
+
+async function onSearchbyCategory(e) {
+  if (!e.target.classList.contains('category-btn')) {
+    return;
+  }
+  const value = e.target.textContent;
+
+  try {
+    loader.classList.remove('hidden');
+    const data = await getDataArr();
+    const recipesByCategory = data.filter(
+      item => item.category.toLowerCase() === value.toLowerCase()
+    );
+    if (recipesByCategory.length == 0) {
+      Notify.info('There is no recipes in this category');
+    }
+    cardsGrid.innerHTML = createMarkupGridCard(recipesByCategory);
+  } catch (error) {
+  } finally {
+    loader.classList.add('hidden');
+  }
+}
+
+async function getDataArr() {
+  const res = await fetchCards(1, currentlimit);
+  return res.results;
+}
 
 function createMarkupCategories(data) {
   return data
     .map(
-      item =>
-        `<li class="categories-element" data-id=${item._id}>
-  <button class="category-btn" type="submit">${item.name}</button>
-  </li>`
+      item => `
+      <li class="categories-element" data-id=${item._id}>
+        <button class="category-btn" type="button">${item.name}</button>
+      </li>`
     )
     .join('');
 }
 
-btnAllCategories.addEventListener('click', onAllRecipesClick);
-categoriesAll.addEventListener('click', onSearchCategory);
-
-let recipes = [];
-
 categoriesData();
+
 async function categoriesData() {
   try {
     const result = await fetchCategories();
@@ -50,33 +70,6 @@ async function categoriesData() {
   } catch {
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
-}
-
-async function onAllRecipesClick(evt) {
-  let data = await getDataArr();
-  gallery.innerHTML = createMarkupGridCard(data);
-}
-
-async function onSearchCategory(e) {
-  if (!e.target.classList.contains('category-btn')) {
-    return;
-  }
-  const value = e.target.textContent;
-  let data = await getDataArr();
-
-  const recipesByCategory = data.filter(item => item.category === value);
-  gallery.innerHTML = createMarkupGridCard(recipesByCategory);
-}
-
-async function getDataArr() {
-  let data = [];
-  if (recipes[0]) {
-    data = [];
-  } else {
-    const res = await fetchCards(1, currentlimit);
-    data = res.results;
-  }
-  return data;
 }
 
 let currentlimit = 0;

@@ -8,76 +8,61 @@ const currentRecipe = document.querySelector('.popup-wrapper');
 const body = document.querySelector('body');
 
 if (elements) {
-  elements.addEventListener('click', handalClick);
+  elements.addEventListener('click', handleClick);
 }
 
-async function handalClick(evt) {
-  if (evt.target.classList.contains('img-popular')) {
-    const { id } = evt.target;
+async function handleClick(event) {
+  const recipe = event.target.closest('.popular-recipes-list');
+
+  if (recipe) {
+    const { id } = recipe;
     body.style.overflow = 'hidden';
-
-    //console.log('id', id);
-    popup.addEventListener('click', evt => {
-      if (evt.target.classList.contains('close-button')) {
-        popup.classList.add('is-hidden');
-        body.style.overflow = '';
-      }
-    });
-
     popup.classList.remove('is-hidden');
 
     try {
       const response = await fetchByID(id);
       //console.log('response', response);
       currentRecipe.innerHTML = createMarkupPopup(response);
-    } catch (error) {}
+    } catch (error) {
+      Notify.failure('Oops! Something went wrong! Try reloading the page!');
+    }
   }
 }
 
 function createMarkupPopular(arr) {
   return arr
     .map(
-      ({
-        _id,
-        title,
-        description,
-        preview,
-      }) => `<li id="${_id}" class="popular-recipes-list">
-      <button value="${_id}" class="pop-img-link">
-      </button>
-    <img
-      id="${_id}"
-      class="img-popular"
-      src="${preview}"
-      alt="${title}"
-    />
-    <div class="popular-card">
-      <h4 class="popular-title">${title}</h4>
-      <p class="popular-text">
-        ${description}
-      </p>
-    </div>
-  </li>
-  `
+      ({ _id, title, description, preview }) =>
+        `<li id="${_id}" class="popular-recipes-list">
+          <img class="img-popular"
+            src="${preview}"
+            alt="${title}"
+          />
+          <div class="popular-card">
+            <h4 class="popular-title">${title}</h4>
+            <p class="popular-text">
+              ${description}
+            </p>
+          </div>
+        </li>`
     )
     .join('');
 }
 
 async function popularData() {
-  let getLi;
+  let getList;
   try {
     const result = await fetchPopular();
     if (result.length) {
       elements.innerHTML = createMarkupPopular(result);
-      //console.log('result', result);
 
-      getLi = document.querySelectorAll('.popular-recipes-list');
+      getList = document.querySelectorAll('.popular-recipes-list');
     }
   } catch {
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
 
-  return { getLi: getLi /*result: result*/ };
+  return { getList: getList /*result: result*/ };
 }
 
 popularData();
@@ -85,139 +70,63 @@ popularData();
 function createMarkupPopup(arr) {
   const roundRating = Math.round(arr.rating);
 
-  return `<button type="button" data-modal-popup-close class="close-button">
-      <svg class="close-window" width="20" height="20">
-        <use href="${sprite}#cross-close-modal"></use>
-      </svg>
-    </button>
-    <h2 class="recipe-name-tablet">${arr.title}</h2>
-    <img
-   class="current-recipe-img"
-  src="${arr.thumb}"
-  alt="${arr.title}"
- />
- <h2 class="recipe-name">${arr.title}</h2>
- <div class="information">
- <ul class="tags">
-   ${arr.tags
-     .map(
-       item => ` <li class="tag"><p class="type-item-text">#${item}</p></li>`
-     )
-     .join('')} 
+  return `
+  <button type="button" data-modal-popup-close class="close-button">
+    <svg class="close-window" width="20" height="20">
+      <use href="${sprite}#cross-close-modal"></use>
+    </svg>
+  </button>
+  <h2 class="recipe-name-tablet">${arr.title}</h2>
+  <img class="current-recipe-img" src="${arr.thumb}" alt="${arr.title}"/>
+  <h2 class="recipe-name">${arr.title}</h2>
+  <div class="information">
+    <ul class="tags">
+      ${arr.tags
+        .map(
+          item => ` <li class="tag"><p class="type-item-text">#${item}</p></li>`
+        )
+        .join('')} 
+    </ul>
+    <p class="current-rating">${arr.rating}</p>
+    <ul class="stars">
+      ${markupRatingStarsPop(roundRating)}
+    </ul>
+    <p class="cooking-time">${arr.time} min</p>
+  </div>
+  <ul class="ingredients-list">
+    ${arr.ingredients
+      .map(
+        ({ measure, name }) => `<li class="current-ingredients-item border">
+      <p class="current-ingredients-name">${name}</p>
+      <p class="current-ingredients-quantity">${measure}</p>
+    </li>
+    `
+      )
+      .join('')} 
   </ul>
-  <p class="current-rating">${arr.rating}</p>
-  <ul class="current-star">
-     ${markupRatingStarsPop(roundRating)}
-   </ul>
-   <p class="cooking-time">${arr.time} min</p>
-    </div>
-    <ul class="ingredients-list">
-  ${arr.ingredients
-    .map(
-      ({ measure, name }) => `<li class="current-ingredients-item border">
-     <p class="current-ingredients-name">${name}</p>
-     <p class="current-ingredients-quantity">${measure}</p>
-  </li>
- `
-    )
-    .join('')} 
- </ul>
-   <ul class="current-type-dish">
-   ${arr.tags
-     .map(
-       item => ` <li class="tag"><p class="type-item-text">#${item}</p></li>`
-     )
-     .join('')} 
- </ul>
- <p class="current-recipe">
-   ${arr.instructions}
- </p>
- <div class="btns-holder">
-   <a href="" class="btn btn-primary btns-holder-text">Add to favorite</a
-   ><a href="" class="btn btn-outline btns-holder-text">Give a rating</a></div>
- </div>`;
+  <ul class="current-type-dish">
+    ${arr.tags
+      .map(
+        item => ` <li class="tag"><p class="type-item-text">#${item}</p></li>`
+      )
+      .join('')} 
+  </ul>
+  <p class="current-recipe">
+    ${arr.instructions}
+  </p>
+  <div class="btns-holder">
+    <a href="" class="btn btn-primary btns-holder-text">Add to favorite</a
+    ><a href="" class="btn btn-outline btns-holder-text">Give a rating</a></div>
+  </div>`;
 }
+
 function markupRatingStarsPop(roundRating) {
-  switch (roundRating) {
-    case 1:
-      return `<svg class="current-star-color active-star" width="14" height="14">
+  return Array.from(
+    { length: 5 },
+    (_, index) => `
+    <svg class="icon-star${index < roundRating ? ' star' : ''}">
       <use href="./sprite.svg#rating-star"></use>
     </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 2:
-      return `<svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 3:
-      return `<svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>`;
-    case 4:
-      return `<svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use
-    </svg>`;
-    case 5:
-      return `<svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-    <svg class="current-star-color active-star" width="14" height="14">
-      <use href="./sprite.svg#rating-star"></use
-    </svg>`;
-  }
+  `
+  ).join('');
 }

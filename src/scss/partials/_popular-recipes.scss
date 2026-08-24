@@ -1,3 +1,5 @@
+@use '../general/variables' as *;
+
 .popular-categories {
   @media only screen and (min-width: 768px) {
     flex-basis: 60%;
@@ -46,6 +48,7 @@
   .popular-recipes-list {
     align-items: flex-start;
     display: flex;
+    cursor: pointer;
 
     .popular-title {
       font-size: 1.5rem;

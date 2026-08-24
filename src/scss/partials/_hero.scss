@@ -1,3 +1,5 @@
+@use '../general/variables' as *;
+
 .hero {
   --swiper-pagination-color: #{$colorPrimary};
   --swiper-preloader-color: #{$black};

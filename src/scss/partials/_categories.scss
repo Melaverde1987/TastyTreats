@@ -1,4 +1,5 @@
 @use '../general/mixin' as mixin;
+@use '../general/variables' as *;
 
 .categories {
   display: flex;
