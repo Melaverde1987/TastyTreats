@@ -5,8 +5,9 @@ label {
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 1.28;
-  color: rgba(5, 5, 5, 0.5);
+  color: $colorTextGray;
   margin-bottom: 8px;
+  display: block;
 }
 
 input {
@@ -15,7 +16,7 @@ input {
   &::placeholder {
     font-size: 1.4rem;
     font-weight: 500;
-    color: rgba(5, 5, 5, 0.5);
+    color: $colorTextGray;
 
     @media only screen and (min-width: 768px) {
       font-size: 1.6rem;
@@ -32,13 +33,12 @@ input,
 .filters .filter-select {
   padding: 12px 14px;
   border-radius: 15px;
-  border: 1px solid rgba(5, 5, 5, 0.2);
+  border: 1px solid $colorBorder;
   font-size: 1.6rem;
   font-weight: 500;
   line-height: 1.25;
   background: transparent;
   font-weight: 500;
-  color: rgba(5, 5, 5, 0.5);
 
   @media only screen and (min-width: 768px) {
     padding: 14px 18px;
@@ -55,7 +55,7 @@ textarea {
     padding: 14px 18px;
     font-size: 1.4rem;
     font-weight: 500;
-    color: rgba(5, 5, 5, 0.5);
+    color: $colorTextGray;
 
     @media only screen and (min-width: 768px) {
       font-size: 1.6rem;
@@ -63,16 +63,23 @@ textarea {
   }
 }
 
+.ss-single {
+  color: $colorTextGray !important;
+}
+
 .ss-content {
   --ss-font-color: $colorTextDark;
+  border: 1px solid $colorBorder !important;
+  border: unset !important;
 
   .ss-list {
+    background-color: $colorBody !important;
     @include mixin.scrollbar(4px);
 
     .ss-option {
       font-size: 1.6rem;
       color: $colorTextDark;
-      background: $white !important;
+      background-color: $colorWhite !important;
       padding: 8px 18px !important;
 
       &.ss-selected {
@@ -80,7 +87,7 @@ textarea {
       }
 
       &.ss-disabled {
-        color: rgba(5, 5, 5, 0.5) !important;
+        color: $colorTextGray !important;
       }
 
       &.filter-select-option {
@@ -108,7 +115,7 @@ textarea {
   &.ss-open-below,
   &.ss-open-above {
     border-radius: 12px !important;
-    border: 1px solid rgba(5, 5, 5, 0.2);
+    border: 1px solid $colorBorder;
     font-size: 1.6rem;
     font-weight: 500;
     line-height: 1.25;

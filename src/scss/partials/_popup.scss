@@ -24,7 +24,7 @@
 
   .popup-wrapper {
     border-radius: 15px;
-    background: $white;
+    background: $bgPopup;
     padding-bottom: 40px;
     padding-top: 40px;
     position: relative;
@@ -111,7 +111,7 @@
       }
 
       .current-rating {
-        color: $colorTextDark;
+        color: $colorTextGray;
         font-size: 1.4rem;
         font-weight: 500;
         line-height: 1.28;
@@ -144,7 +144,7 @@
       }
 
       .cooking-time {
-        color: $colorTextDark;
+        color: $colorTextGray;
         font-size: 1.4rem;
         font-weight: 500;
         line-height: 1.28;
@@ -160,7 +160,7 @@
     }
 
     .current-recipe {
-      color: rgba(5, 5, 5, 0.8);
+      color: $colorTextDark;
       line-height: 1.4;
       margin-top: 24px;
       font-size: 1.4rem;
@@ -174,7 +174,7 @@
   }
 
   .current-ingredients-name {
-    color: var(--colorTextDark);
+    color: $colorTextDark;
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
@@ -183,7 +183,7 @@
   }
 
   .current-ingredients-quantity {
-    color: var(--colorTextGray);
+    color: $colorTextGray;
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
@@ -204,7 +204,7 @@
   }
 
   .type-item-text {
-    color: var(--colorTextDark);
+    color: $colorTextDark;
     font-family: Inter;
     font-size: 12px;
     font-style: normal;
@@ -224,14 +224,5 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-  }
-
-  .border::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    border: 0.5px solid var(--black);
-    opacity: 0.1;
-    top: 20px;
   }
 }

@@ -1,6 +1,6 @@
 import { fetchCategories } from './API/categories-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { createMarkupGridCard } from './grid-card-fetch';
+import { createMarkupGridCard } from './markup-card';
 import { fetchCards } from './API/grid-cards-api';
 
 const cardsGrid = document.querySelector('.list-recipes');

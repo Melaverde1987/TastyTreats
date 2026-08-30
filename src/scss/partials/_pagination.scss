@@ -22,8 +22,8 @@
     font-weight: 600;
     font-size: 1.4rem;
     line-height: 1;
-    color: $colorTextDark;
-    border: 1px solid rgba(5, 5, 5, 0.3);
+    color: $dark;
+    border: 1px solid $colorBorder;
 
     &:hover {
       background-color: rgba(155, 181, 55, 0.6);
@@ -73,11 +73,11 @@
     }
 
     .pag-arrow {
-      fill: $light;
-      opacity: 50%;
+      fill: $colorBody;
       height: 14px;
       width: auto;
       transform: rotate(180deg);
+      opacity: 0.7;
 
       &.double {
         height: 22px;
@@ -108,10 +108,10 @@
     }
 
     .pag-arrow {
-      fill: $light;
-      opacity: 50%;
+      fill: $dark;
       height: 14px;
       width: auto;
+      opacity: 0.7;
 
       &.double {
         height: 22px;
@@ -132,10 +132,6 @@
     &:active {
       background-color: rgba(155, 181, 55, 0.4);
     }
-  }
-
-  .btns-forward .js-arrow {
-    fill: $colorTextDark;
   }
 
   .additional-btn {

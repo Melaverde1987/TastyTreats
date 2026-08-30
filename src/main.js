@@ -8,8 +8,8 @@ import './js/filters-fetch.js';
 import './js/categories-fetch.js';
 import './js/pagination.js';
 import './js/popular-recipes-fetch.js';
-//import './js/slim-select.js';
 
 import './js/popup.js';
+import './js/theme-switcher.js';
 import './js/popup-fetch.js';
 import './js/favorites.js';

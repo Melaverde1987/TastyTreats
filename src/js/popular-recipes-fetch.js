@@ -96,7 +96,7 @@ function createMarkupPopup(arr) {
   <ul class="ingredients-list">
     ${arr.ingredients
       .map(
-        ({ measure, name }) => `<li class="current-ingredients-item border">
+        ({ measure, name }) => `<li class="current-ingredients-item">
       <p class="current-ingredients-name">${name}</p>
       <p class="current-ingredients-quantity">${measure}</p>
     </li>

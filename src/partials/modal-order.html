@@ -1,7 +1,12 @@
 <div class="modal-order is-hidden" data-order-popup>
   <div class="inner-container">
-    <button class="close-btn" type="button" data-order-popup-close>
-      <svg class="order-cls-icon" width="20" height="20">
+    <button
+      class="close-btn"
+      type="button"
+      aria-label="close popup"
+      data-order-popup-close
+    >
+      <svg class="close-icon" width="20" height="20">
         <use href="./img/sprite.svg#icon-x"></use>
       </svg>
     </button>
@@ -9,20 +14,25 @@
     <p class="title-order">Order now</p>
 
     <form class="form-order">
-      <label class="field-order">
-        <span class="sp-order">Name</span>
-        <input type="text" name="name" class="input-order" />
+      <label>
+        <span>Name</span>
+        <input
+          type="text"
+          name="name"
+          class="input-order"
+          autocomplete="name"
+        />
       </label>
-      <label class="field-order">
-        <span class="sp-order">Phone number</span>
+      <label>
+        <span>Phone number</span>
         <input type="tel" name="phoneNumber" class="input-order" />
       </label>
-      <label class="field-order">
-        <span class="sp-order">Email</span>
+      <label>
+        <span>Email</span>
         <input type="email" name="email" class="input-order" />
       </label>
-      <label class="field-order">
-        <span class="sp-order">Comment</span>
+      <label>
+        <span>Comment</span>
         <textarea name="comment" class="textarea-order input-order"></textarea>
       </label>
       <button

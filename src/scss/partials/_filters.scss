@@ -73,7 +73,7 @@
     }
 
     .reset-filters {
-      &.js-reset-filters {
+      &.hidden {
         visibility: hidden;
         pointer-events: none;
       }

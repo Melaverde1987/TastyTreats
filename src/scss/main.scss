@@ -17,3 +17,8 @@
 @use 'partials/cards-grid';
 @use 'partials/pagination';
 @use 'partials/popup';
+@use 'partials/modal-order';
+
+@use 'partials/hero-favorites';
+@use 'partials/favorites-default';
+@use 'partials/cards-grid-favorites';

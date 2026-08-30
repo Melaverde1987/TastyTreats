@@ -133,12 +133,13 @@
           justify-content: flex-end;
           overflow: hidden;
           border-radius: 15px;
-          background: $colorTextDark;
+          background: $bgDark;
           background-image: url('/hero-home/ellipse.svg');
           background-size: 200px 200px;
           background-repeat: no-repeat;
           background-position: center;
           overflow: hidden;
+          border: 1px solid rgba(155, 181, 55, 0.3);
 
           @media only screen and (min-width: 768px) {
             width: calc(40% - 8px);

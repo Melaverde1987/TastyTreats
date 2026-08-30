@@ -11,6 +11,9 @@ const elements = {
   btnFin: document.querySelector('.pag-forward-btn'),
 };
 
+const storedFavorites =
+  JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+
 const pages = 7; //кількість сторінок
 let quantMobbtn = 3; // кількість кнопок сторінок в моб варіанті
 
@@ -141,9 +144,13 @@ function createMarkupGridCardPag(arr) {
     .map(({ _id, title, description, rating, thumb }) => {
       const roundRating = Math.round(rating);
       const ratingNumber = rating.toFixed(1);
+      const heartFull = storedFavorites.some(
+        favRecipe => _id === favRecipe._id
+      );
+
       return `<li class="item-recipes">
             <div class="wrap-recipes">
-              <button type="button" class="btn-add-to-favorite" name="${_id}">
+              <button type="button" class="btn-add-to-favorite ${heartFull ? 'active' : 'no'}" data-name="${_id}">
                   <svg class="icon-heart" width="24" height="24">
                     <use href="./sprite.svg#heart-favorite"></use>
                   </svg>

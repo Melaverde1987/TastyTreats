@@ -3,18 +3,44 @@
 COLORS 
 ================
 */
+:root {
+  --color-body: #f8f8f8;
+  --colorTextDark: #050505;
+  --colorTextGray: rgba(5, 5, 5, 0.5);
+  --colorBorder: rgba(5, 5, 5, 0.2);
+  --color-white: #fff;
+  --color-black: #000;
+  --bg-popup: #fff;
+}
+
+body.dark {
+  --color-body: #1e1e1e;
+  --colorTextDark: #f8f8f8;
+  --colorTextGray: rgba(255, 255, 255, 0.5);
+  --colorBorder: rgba(255, 255, 255, 0.2);
+  --color-white: #000;
+  --bg-popup: #050505;
+  --color-black: #fff;
+}
 
 $white: #ffffff;
 $black: #000000;
 
+$colorWhite: var(--color-white);
+$colorBlack: var(--color-black);
+
 $colorPrimary: #9bb537;
 $colorAccent: #eea10c;
+$colorBody: var(--color-body);
 $dark: #1e1e1e;
 $light: #f8f8f8;
 
-$colorTextDark: #050505;
-$colorTextGray: rgba(5, 5, 5, 0.5);
-$colorBorder: rgba(5, 5, 5, 0.2);
+$bgDark: #050505;
+$bgPopup: var(--bg-popup);
+
+$colorTextDark: var(--colorTextDark);
+$colorTextGray: var(--colorTextGray);
+$colorBorder: var(--colorBorder);
 
 /* 
 ==============

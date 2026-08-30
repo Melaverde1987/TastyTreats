@@ -3,22 +3,20 @@
     <nav class="nav">
       <ul class="nav-list">
         <li class="nav-item">
-          <a href="./index.html" class="nav-link">Home</a>
+          <a href="./index.html" class="nav-link {=$home-class}">Home</a>
         </li>
         <li class="nav-item">
-          <a href="./favorites.html" class="nav-link">Favorites</a>
+          <a href="./favorites.html" class="nav-link {=$fav-class}"
+            >Favorites</a
+          >
         </li>
       </ul>
     </nav>
 
-    <a href="./index.html" aria-label="logo Tasty Treats" class="logo">
-      <svg width="95" height="22">
-        <use href="./img/sprite.svg#logo"></use>
-      </svg>
-    </a>
+    <a href="./index.html" class="logo"><span>tasty</span>treats </a>
 
     <label class="switch">
-      <input type="checkbox" name="theme-switcher" />
+      <input type="checkbox" data-name="theme-switcher" />
       <span class="slider"></span>
     </label>
 
@@ -53,7 +51,7 @@
     </ul>
 
     <label class="switch mobile">
-      <input type="checkbox" name="theme-switcher" />
+      <input type="checkbox" data-name="theme-switcher" />
       <span class="slider"></span>
     </label>
   </div>

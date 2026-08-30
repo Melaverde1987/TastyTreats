@@ -1,7 +1,7 @@
 @use '../general/variables' as *;
 
-.cards-grid {
-  .list-recipes {
+.cards-grid-favorites {
+  .list-recipes-favorites {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;

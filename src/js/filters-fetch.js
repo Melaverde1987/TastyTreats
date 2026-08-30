@@ -6,7 +6,8 @@ import {
 
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { debounce } from 'debounce';
-import { createMarkupGridCard, defaultData } from './grid-card-fetch';
+import { defaultData } from './grid-card-fetch';
+import { createMarkupGridCard } from './markup-card';
 
 import SlimSelect from 'slim-select';
 import 'slim-select/styles';
@@ -131,8 +132,16 @@ async function renderFilteredRecipes() {
     const recipesOnPage = filteredRecipes.slice(0, limit);
 
     elements.cards.innerHTML = createMarkupGridCard(recipesOnPage);
+    elements.resetButton.classList.remove('hidden');
 
-    elements.resetButton.classList.remove('js-reset-filters');
+    if (
+      filters.name === '' &&
+      filters.area == false &&
+      filters.time == false &&
+      filters.ingredient == false
+    ) {
+      elements.resetButton.classList.add('hidden');
+    }
   } catch (error) {
     console.error(error);
 
@@ -152,15 +161,17 @@ function getQueryNameRecipes(e) {
   const inputValue = e.target.value.trim();
 
   if (inputValue === '') {
-    cardsWithSearchData(inputValue, currentlimit);
-    Notify.info('Your query is empty. Please try again');
+    //elements.resetButton.classList.add('hidden');
+    cardsWithSearchData();
+
+    //Notify.info('Your query is empty. Please try again');
     return;
   }
 
   cardsWithSearchData(inputValue, currentlimit);
 }
 
-async function cardsWithSearchData(nameRecipe, currentlimit) {
+async function cardsWithSearchData() {
   await renderFilteredRecipes();
 }
 
@@ -229,8 +240,7 @@ function clearFilters(e) {
     ingredientsSlimSelect.setSelected(['']);
 
     elements.cards.innerHTML = defaultData();
-
-    elements.resetButton.classList.add('js-reset-filters');
+    elements.resetButton.classList.add('hidden');
   }
 }
 

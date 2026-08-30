@@ -4,11 +4,16 @@ import sprite from '../img/sprite.svg';
 
 const currentRecipe = document.querySelector('.popup-wrapper');
 const cardsGrid = document.querySelector('.cards-grid');
+const cardsGridFavorites = document.querySelector('.cards-grid-favorites');
 const popup = document.querySelector('[data-modal-popup]');
 const body = document.querySelector('body');
 
 if (cardsGrid) {
   cardsGrid.addEventListener('click', handleClick);
+}
+
+if (cardsGridFavorites) {
+  cardsGridFavorites.addEventListener('click', handleClick);
 }
 
 async function handleClick(event) {
@@ -55,7 +60,7 @@ async function handleClick(event) {
     <ul class="ingredients-list">
       ${arr.ingredients
         .map(
-          ({ measure, name }) => `<li class="current-ingredients-item border">
+          ({ measure, name }) => `<li class="current-ingredients-item">
         <p class="current-ingredients-name">${name}</p>
         <p class="current-ingredients-quantity">${measure}</p>
       </li>`
