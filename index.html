@@ -5,10 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/TastyTreats/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tasty Treats</title>
-    <!--<link rel="stylesheet" href="./css/main.css" />-->
-    <script type="module" crossorigin src="/TastyTreats/assets/index-c5c85bb6.js"></script>
-    <link rel="modulepreload" crossorigin href="/TastyTreats/assets/favorites-358b3a8b.js">
-    <link rel="stylesheet" href="/TastyTreats/assets/index-803e3a1a.css">
+    <script type="module" crossorigin src="/TastyTreats/assets/index-380ff469.js"></script>
+    <link rel="modulepreload" crossorigin href="/TastyTreats/assets/popup-a72e6a5e.js">
+    <link rel="stylesheet" href="/TastyTreats/assets/popup-602ad52a.css">
+    <link rel="stylesheet" href="/TastyTreats/assets/index-1379ec22.css">
   </head>
   <body>
     <header class="header">
@@ -16,22 +16,20 @@
     <nav class="nav">
       <ul class="nav-list">
         <li class="nav-item">
-          <a href="./index.html" class="nav-link">Home</a>
+          <a href="./index.html" class="nav-link active">Home</a>
         </li>
         <li class="nav-item">
-          <a href="./favorites.html" class="nav-link">Favorites</a>
+          <a href="./favorites.html" class="nav-link {=$fav-class}"
+            >Favorites</a
+          >
         </li>
       </ul>
     </nav>
 
-    <a href="./index.html" aria-label="logo Tasty Treats" class="logo">
-      <svg width="95" height="22">
-        <use href="/TastyTreats/assets/sprite-28368b95.svg#logo"></use>
-      </svg>
-    </a>
+    <a href="./index.html" class="logo"><span>tasty</span>treats </a>
 
     <label class="switch">
-      <input type="checkbox" name="theme-switcher" />
+      <input type="checkbox" data-name="theme-switcher" />
       <span class="slider"></span>
     </label>
 
@@ -66,7 +64,7 @@
     </ul>
 
     <label class="switch mobile">
-      <input type="checkbox" name="theme-switcher" />
+      <input type="checkbox" data-name="theme-switcher" />
       <span class="slider"></span>
     </label>
   </div>
@@ -163,7 +161,7 @@
   </div>
 
   <div class="reset-container">
-    <button type="button" class="btn reset-filters js-reset-filters">
+    <button type="button" class="btn reset-filters js-reset-filters hidden">
       <svg width="18" height="18">
         <use href="/TastyTreats/assets/sprite-28368b95.svg#cross-close-modal"></use>
       </svg>
@@ -210,112 +208,58 @@
 </section>
 
       <div class="popup is-hidden" data-modal-popup>
-  <div class="container popup-wrapper">
-    <!-- <button type="button" data-modal-popup-close class="close-button">
-      <svg class="close-window" width="20" height="20">
-        <use href="./img/sprite.svg#cross-close-modal"></use>
-      </svg>
-    </button> -->
-    <!-- <h2 class="recipe-name-tablet">BANANA PANCAKES</h2>
-    <img
-      class="current-recipe-img"
-      src="./img/pop-up/pop-up-recept-tab.jpg"
-      alt="pop-up-recept"
-    />
-    <h2 class="recipe-name">BANANA PANCAKES</h2>
-    <div class="information">
-      <ul class="tags">
-        <li class="tag">
-          <p class="type-item-text">#Breakfast</p>
-        </li>
-        <li class="tag"><p class="type-item-text">#Desert</p></li>
-        <li class="tag"><p class="type-item-text">#Sweet</p></li>
-      </ul>
-      <p class="current-rating">4.5</p>
-      <ul class="current-star">
-        <li class="current-star-color">
-          <svg class="star-icon" width="18" height="18">
-            <use href="./img/sprite.svg#rating-star"></use>
-          </svg>
-        </li>
-        <li class="current-star-color">
-          <svg class="star-icon" width="18" height="18">
-            <use href="./img/sprite.svg#rating-star"></use>
-          </svg>
-        </li>
-        <li class="current-star-color">
-          <svg class="star-icon" width="18" height="18">
-            <use href="./img/sprite.svg#rating-star"></use>
-          </svg>
-        </li>
-        <li class="current-star-color">
-          <svg class="star-icon" width="18" height="18">
-            <use href="./img/sprite.svg#rating-star"></use>
-          </svg>
-        </li>
-        <li class="current-star-color">
-          <svg class="star-icon" width="18" height="18">
-            <use href="./img/sprite.svg#rating-star"></use>
-          </svg>
-        </li>
-      </ul>
-      <p class="cooking-time">40 min</p>
-    </div>
-    <ul class="ingredients-list">
-      <li class="current-ingredients-item border">
-        <p class="current-ingredients-name">Banana</p>
-        <p class="current-ingredients-quantity">1 large</p>
-      </li>
+  <div class="container popup-wrapper"></div>
+</div>
 
-      <li class="current-ingredients-item border">
-        <p class="current-ingredients-name">Banana</p>
-        <p class="current-ingredients-quantity">1 large</p>
-      </li>
-      <li class="current-ingredients-item border">
-        <p class="current-ingredients-name">Banana</p>
-        <p class="current-ingredients-quantity">1 large</p>
-      </li>
-      <li class="current-ingredients-item border">
-        <p class="current-ingredients-name">Banana</p>
-        <p class="current-ingredients-quantity">1 large</p>
-      </li>
-      <li class="current-ingredients-item border">
-        <p class="current-ingredients-name">Banana</p>
-        <p class="current-ingredients-quantity">1 large</p>
-      </li>
-      <li class="current-ingredients-item border">
-        <p class="current-ingredients-name">Banana</p>
-        <p class="current-ingredients-quantity">1 large</p>
-      </li>
-    </ul>
-    <ul class="current-type-dish">
-      <li class="tag">
-        <p class="type-item-text">#Breakfast</p>
-      </li>
-      <li class="tag"><p class="type-item-text">#Desert</p></li>
-      <li class="tag"><p class="type-item-text">#Sweet</p></li>
-    </ul>
-    <p class="current-recipe">
-      Mash the ripe banana in a medium mixing bowl. Add the egg and whisk
-      together until well combined. Add the flour, baking powder, cinnamon (if
-      using), and salt, and stir until just combined. Heat a non-stick skillet
-      or griddle over medium heat and add the vegetable oil or melted butter.
-      Scoop the batter onto the skillet or griddle using a 1/4 cup measure, and
-      cook for 2-3 minutes on each side, or until the pancakes are golden brown
-      and cooked through. Serve warm with your favorite toppings such as maple
-      syrup, sliced bananas, or whipped cream.
-    </p>
-    <div class="btns-holder">
-      <a href="" class="btn btn-primary btns-holder-text">Add to favorite</a
-      ><a href="" class="btn btn-outline btns-holder-text">Give a rating</a>
-    </div> -->
+      <div class="modal-order is-hidden" data-order-popup>
+  <div class="inner-container">
+    <button
+      class="close-btn"
+      type="button"
+      aria-label="close popup"
+      data-order-popup-close
+    >
+      <svg class="close-icon" width="20" height="20">
+        <use href="/TastyTreats/assets/sprite-28368b95.svg#icon-x"></use>
+      </svg>
+    </button>
+
+    <p class="title-order">Order now</p>
+
+    <form class="form-order">
+      <label>
+        <span>Name</span>
+        <input
+          type="text"
+          name="name"
+          class="input-order"
+          autocomplete="name"
+        />
+      </label>
+      <label>
+        <span>Phone number</span>
+        <input type="tel" name="phoneNumber" class="input-order" />
+      </label>
+      <label>
+        <span>Email</span>
+        <input type="email" name="email" class="input-order" />
+      </label>
+      <label>
+        <span>Comment</span>
+        <textarea name="comment" class="textarea-order input-order"></textarea>
+      </label>
+      <button
+        type="submit"
+        name="submit"
+        class="btn btn-primary send-btn-order"
+        disabled
+      >
+        Send
+      </button>
+    </form>
   </div>
 </div>
 
-      <!--
-      <x-load src="partials/modal-order.html" />
-      <x-load src="partials/popup.html" />
-       -->
     </main>
 
     
