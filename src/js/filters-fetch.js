@@ -6,12 +6,13 @@ import {
 
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { debounce } from 'debounce';
-import { defaultData } from './grid-card-fetch';
+import { defaultData } from './pagination';
 import { createMarkupGridCard } from './markup-card';
 
 import SlimSelect from 'slim-select';
 import 'slim-select/styles';
 
+let currentPage = 1;
 let currentlimit = 6;
 let allRecipes = null;
 
@@ -124,7 +125,7 @@ async function renderFilteredRecipes() {
     });
 
     if (filteredRecipes.length === 0) {
-      elements.cards.innerHTML = defaultData();
+      elements.cards.innerHTML = defaultData(currentPage, currentlimit);
       Notify.warning('Nothing was found for your request!');
       return;
     }
@@ -239,7 +240,7 @@ function clearFilters(e) {
     areaSlimSelect.setSelected(['']);
     ingredientsSlimSelect.setSelected(['']);
 
-    elements.cards.innerHTML = defaultData();
+    elements.cards.innerHTML = defaultData(currentPage, currentlimit);
     elements.resetButton.classList.add('hidden');
   }
 }

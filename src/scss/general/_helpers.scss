@@ -66,10 +66,10 @@
   z-index: 999;
   left: 50%;
   top: 50%;
-}
 
-.loader.hidden {
-  display: none;
+  &.hidden {
+    display: none;
+  }
 }
 
 @keyframes rotation {

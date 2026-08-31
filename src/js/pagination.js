@@ -1,329 +1,193 @@
 import { fetchCards } from './API/grid-cards-api';
-import { setCardsLimitResizer } from './grid-card-fetch';
+import { createMarkupGridCard } from './markup-card';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const loader = document.querySelector('.loader');
+
 const elements = {
+  cards: document.querySelector('.list-recipes'),
   btnsPagesBox: document.querySelector('.js-btns-pages'),
   pagWrap: document.querySelector('.js-pag-wrap'),
   btnsBack: document.querySelector('.btns-back'),
   btnsEnd: document.querySelector('.btns-forward'),
-  btnFin: document.querySelector('.pag-forward-btn'),
 };
 
-const storedFavorites =
-  JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+let pages = 1;
+let currentPage = 1;
+let currentLimit = 6;
+let visiblePages = 3;
 
-const pages = 7; //кількість сторінок
-let quantMobbtn = 3; // кількість кнопок сторінок в моб варіанті
+if (elements.cards) {
+  init();
+}
 
-let currentPage = 1; //поточна сторінка
-let currentlimit; // рецептів на сторінці
-// let totalPages; // кількість рецептів
+function init() {
+  setCardsLimit();
 
-setCardsLimitTest();
+  elements.btnsPagesBox.addEventListener('click', handlerButtonPag);
+  elements.pagWrap.addEventListener('click', handlerButtonArrow);
 
-function setCardsLimitTest() {
-  if (window.screen.width >= 768 && window.screen.width < 1200) {
-    currentlimit = 8;
-    quantMobbtn = 4;
-    defaultDataTest(currentPage, currentlimit);
-  } else if (window.screen.width >= 1200) {
-    currentlimit = 9;
-    quantMobbtn = 4;
-    defaultDataTest(currentPage, currentlimit);
+  window.addEventListener('resize', setCardsLimitResizer);
+}
+
+function setCardsLimit() {
+  const width = window.innerWidth;
+
+  if (width >= 1200) {
+    currentLimit = 9;
+    visiblePages = 4;
+  } else if (width >= 768) {
+    currentLimit = 8;
+    visiblePages = 3;
+  } else {
+    currentLimit = 6;
+    visiblePages = 3;
   }
-  setCardsLimitResizerTest();
+
+  defaultData(currentPage, currentLimit);
 }
 
-setCardsLimitResizerTest();
+function setCardsLimitResizer() {
+  const oldLimit = currentLimit;
+  const oldVisiblePages = visiblePages;
 
-function setCardsLimitResizerTest() {
-  window.addEventListener('resize', function () {
-    if (window.screen.width >= 768 && window.screen.width < 1200) {
-      currentlimit = 8;
-      quantMobbtn = 4;
-      defaultDataTest(currentPage, currentlimit);
-      return quantMobbtn;
-    } else if (window.screen.width >= 1200) {
-      currentlimit = 9;
-      quantMobbtn = 4;
-      defaultDataTest(currentPage, currentlimit);
-      return quantMobbtn;
-    } else {
-      currentlimit = 6;
-      quantMobbtn = 3;
-      defaultDataTest(currentPage, currentlimit);
-      return quantMobbtn;
-    }
-  });
-}
+  const width = window.innerWidth;
 
-elements.btnsPagesBox.addEventListener('click', handlerBattonPag);
-elements.pagWrap.addEventListener('click', handlerBattonArrow);
-
-quantityBtn(pages);
-
-function quantityBtn(quantityPages) {
-  elements.btnsPagesBox.innerHTML = markupBtnPagination(quantityPages);
-}
-
-function markupBtnPagination(pages) {
-  const arrBtn = [];
-
-  for (let i = 1; i <= pages; i += 1) {
-    if (i === quantMobbtn && pages === quantMobbtn) {
-      arrBtn.push(
-        `<button type="button" class="pag-btn pag-btn">${i}</button>`
-      );
-      continue;
-    }
-    // if (i === quantMobbtn && pages !== quantMobbtn) {
-    //   arrBtn.push(
-    //     `<button type="button" class="pag-btn pag-btn additional-btn">...</button>`
-    //   );
-    //   continue;
-    // }
-    else
-      arrBtn.push(
-        `<button type="button" class="pag-btn pag-btn">${i}</button>`
-      );
+  if (width >= 1200) {
+    currentLimit = 9;
+    visiblePages = 4;
+  } else if (width >= 768) {
+    currentLimit = 8;
+    visiblePages = 3;
+  } else {
+    currentLimit = 6;
+    visiblePages = 3;
   }
-  if (arrBtn.length <= quantMobbtn) {
-    elements.btnsBack.classList.add('visually-hidden');
-    elements.btnsEnd.classList.add('visually-hidden');
-  }
-  arrBtn.splice(
-    0,
-    1,
-    `<button type="button" class="pag-btn pag-btn btn-active">1</button>`
-  );
-  const visualBtn = pages - (pages - quantMobbtn);
-  const allBtn = arrBtn.slice(0, visualBtn);
 
-  return allBtn.join('');
+  if (oldLimit !== currentLimit || oldVisiblePages !== visiblePages) {
+    currentPage = 1;
+    defaultData(currentPage, currentLimit);
+  }
 }
 
-function handlerBattonPag(e) {
-  if (e.target.nodeName !== 'BUTTON') {
+async function defaultData(page, limit) {
+  loader.classList.remove('hidden');
+
+  try {
+    const result = await fetchCards(page, limit);
+
+    pages = result.totalPages;
+    currentPage = page;
+
+    elements.cards.innerHTML = createMarkupGridCard(result.results);
+
+    renderPagination();
+  } catch (error) {
+    Notify.failure('Oops! Something went wrong! Try reloading the page!');
+
+    console.log(error);
+  } finally {
+    loader.classList.add('hidden');
+  }
+}
+
+function renderPagination() {
+  elements.btnsPagesBox.innerHTML = markupBtnPagination();
+
+  togglePaginationArrows();
+}
+
+function markupBtnPagination() {
+  const buttons = [];
+
+  const startPage = getStartPage();
+  const endPage = Math.min(startPage + visiblePages - 1, pages);
+
+  for (let page = startPage; page <= endPage; page += 1) {
+    buttons.push(`
+      <button
+        type="button"
+        class="pag-btn ${page === currentPage ? 'btn-active' : ''}"
+      >
+        ${page}
+      </button>
+    `);
+  }
+
+  return buttons.join('');
+}
+
+function getStartPage() {
+  if (pages <= visiblePages) {
+    return 1;
+  }
+
+  let startPage = currentPage - Math.floor(visiblePages / 2);
+
+  if (startPage < 1) {
+    startPage = 1;
+  }
+
+  if (startPage + visiblePages - 1 > pages) {
+    startPage = pages - visiblePages + 1;
+  }
+
+  return startPage;
+}
+
+function handlerButtonPag(event) {
+  const button = event.target.closest('.pag-btn');
+
+  if (!button) {
     return;
   }
-  loader.classList.remove('hidden');
-  const currentActiveBtn = document.querySelector('.btn-active');
 
-  if (currentActiveBtn) {
-    currentActiveBtn.classList.remove('btn-active');
+  const page = Number(button.textContent);
+
+  if (page === currentPage) {
+    return;
   }
 
-  if (e.target) {
-    e.target.classList.add('btn-active');
-    currentPage = Number(e.target.textContent);
-    //console.dir(Number(e.target.textContent));
+  defaultData(page, currentLimit);
+}
 
-    // зміна розмітки
-    defaultDataTest(currentPage, currentlimit);
-    // з цього отримується номер сторінки, вставити функцію розмітки сторінки
+function handlerButtonArrow(event) {
+  const target = event.target;
+
+  if (target.closest('.pag-start-btn')) {
+    goToPage(1);
+    return;
+  }
+
+  if (target.closest('.pag-end-btn')) {
+    goToPage(pages);
+    return;
+  }
+
+  if (target.closest('.pag-forward-btn')) {
+    goToPage(currentPage + 1);
+    return;
+  }
+
+  if (target.closest('.pag-back-btn')) {
+    goToPage(currentPage - 1);
   }
 }
 
-const cards = document.querySelector('.list-recipes');
-
-async function defaultDataTest(currentPage, currentlimit) {
-  try {
-    const result = await fetchCards(currentPage, currentlimit);
-    cards.innerHTML = createMarkupGridCardPag(result.results);
-    loader.classList.add('hidden');
-    // pages = result.totalPages;
-  } catch {
-    Notify.failure('Oops! Something went wrong! Try reloading the page!');
+function goToPage(page) {
+  if (page < 1 || page > pages || page === currentPage) {
+    return;
   }
+
+  defaultData(page, currentLimit);
 }
 
-function createMarkupGridCardPag(arr) {
-  return arr
-    .map(({ _id, title, description, rating, thumb }) => {
-      const roundRating = Math.round(rating);
-      const ratingNumber = rating.toFixed(1);
-      const heartFull = storedFavorites.some(
-        favRecipe => _id === favRecipe._id
-      );
+function togglePaginationArrows() {
+  const hidePagination = pages <= visiblePages;
 
-      return `<li class="item-recipes">
-            <div class="wrap-recipes">
-              <button type="button" class="btn-add-to-favorite ${heartFull ? 'active' : 'no'}" data-name="${_id}">
-                  <svg class="icon-heart" width="24" height="24">
-                    <use href="./sprite.svg#heart-favorite"></use>
-                  </svg>
-              </button>
-              <img
-                class="img-recipes"
-                src="${thumb}"
-                alt="${title}"
-                width="335"
-                height="335"
-              />
-              <div class="thumb-desc">
-                <h3 class="title-recipes">${title}</h3>
-                <p class="description-recipes">${description}</p>
-                <div class="rating">
-                  <p class="rating-number">${ratingNumber}</p>
-                  <div class="stars">
-                    ${markupRatingStars(roundRating)}
-                  </div>        
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-recipes"
-                    data-modal-popup-open
-                    id="${_id}"
-                  >
-                    See recipe
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>`;
-    })
-    .join('');
+  elements.btnsBack.classList.toggle('visually-hidden', hidePagination);
+
+  elements.btnsEnd.classList.toggle('visually-hidden', hidePagination);
 }
 
-function markupRatingStars(roundRating) {
-  return Array.from(
-    { length: 5 },
-    (_, index) => `
-    <svg class="icon-star${index < roundRating ? ' star' : ''}">
-      <use href="./sprite.svg#rating-star"></use>
-    </svg>
-  `
-  ).join('');
-}
-
-function handlerBattonArrow(e) {
-  if (e.target.classList.contains('pag-end-btn')) {
-    loader.classList.remove('hidden');
-    elements.btnsPagesBox.innerHTML = markupEndBattons(pages);
-    const currentActiveBtn = document.querySelector('.btn-active');
-    const choosePage = currentActiveBtn.textContent;
-    defaultDataTest(choosePage, currentlimit);
-  }
-  if (e.target.classList.contains('pag-start-btn')) {
-    elements.btnsPagesBox.innerHTML = markupBtnPagination(pages);
-    const currentActiveBtn = document.querySelector('.btn-active');
-    const choosePage = currentActiveBtn.textContent;
-    defaultDataTest(choosePage, currentlimit);
-  }
-  if (e.target.classList.contains('pag-forward-btn')) {
-    const currentActiveBtn = document.querySelector('.btn-active');
-    if (Number(currentActiveBtn.textContent) <= pages - 1) {
-      if (currentActiveBtn.nextSibling) {
-        currentActiveBtn.nextSibling.classList.add('btn-active');
-        currentActiveBtn.classList.remove('btn-active');
-      }
-      defaultDataTest(Number(currentActiveBtn.textContent) + 1, currentlimit);
-
-      btnPageMarkupFront(Number(currentActiveBtn.textContent), pages);
-
-      if (
-        Number(currentActiveBtn.textContent) ===
-        Number(elements.btnsPagesBox.lastChild.textContent) - 1
-      ) {
-        if (Number(elements.btnsPagesBox.lastChild.textContent) + 1 <= pages) {
-          elements.btnsPagesBox.innerHTML = btnPageMarkupFront();
-        }
-      }
-    }
-  }
-  // =========================================================================
-
-  if (e.target.classList.contains('pag-back-btn')) {
-    const currentActiveBtn = document.querySelector('.btn-active');
-    if (Number(currentActiveBtn.textContent) - 1 >= 1) {
-      currentActiveBtn.previousSibling.classList.add('btn-active');
-
-      currentActiveBtn.classList.remove('btn-active');
-      currentActiveBtn.previousSibling.classList.add('btn-active');
-      currentActiveBtn.classList.remove('btn-active');
-      const choosePage = Number(currentActiveBtn.textContent) - 1;
-      defaultDataTest(choosePage, currentlimit);
-
-      //console.log(elements.btnsPagesBox.firstChild.textContent);
-      //console.log(currentActiveBtn.previousSibling.textContent);
-      if (Number(elements.btnsPagesBox.firstChild.textContent) - 1 > 0) {
-        if (
-          Number(elements.btnsPagesBox.firstChild.textContent) ===
-          Number(currentActiveBtn.previousSibling.textContent)
-        ) {
-          elements.btnsPagesBox.innerHTML = btnPageMarkupBack();
-        }
-      }
-    }
-  }
-}
-// ============================================================================
-
-function btnPageMarkupBack() {
-  const currentActiveBtn = document.querySelector('.btn-active');
-
-  //console.log(currentActiveBtn);
-
-  const arrBtn = [];
-
-  for (
-    let i = Number(currentActiveBtn.textContent) - 1;
-    i <= Number(currentActiveBtn.textContent) - 1 + quantMobbtn - 1;
-    i += 1
-  ) {
-    if (i === Number(currentActiveBtn.textContent)) {
-      arrBtn.push(
-        `<button type="button" class="pag-btn pag-btn btn-active">${i}</button>`
-      );
-      continue;
-    }
-    arrBtn.push(`<button type="button" class="pag-btn pag-btn">${i}</button>`);
-  }
-  //console.log(arrBtn);
-  return arrBtn.join('');
-}
-
-function btnPageMarkupFront() {
-  const currentActiveBtn = document.querySelector('.btn-active');
-  const nextElem = currentActiveBtn.nextSibling;
-  const arrBtn = [];
-  if (!nextElem) {
-    for (
-      let i = Number(currentActiveBtn.textContent) + 1 - quantMobbtn + 1;
-      i <= Number(currentActiveBtn.textContent) + 1;
-      i += 1
-    ) {
-      if (i === Number(currentActiveBtn.textContent)) {
-        arrBtn.push(
-          `<button type="button" class="pag-btn pag-btn btn-active">${i}</button>`
-        );
-        continue;
-      } else {
-        arrBtn.push(
-          `<button type="button" class="pag-btn pag-btn">${i}</button>`
-        );
-      }
-    }
-  }
-  return arrBtn.join('');
-}
-
-function markupEndBattons(quantityPages) {
-  const arrBtn = [];
-  for (let i = quantityPages - (quantMobbtn - 1); i <= quantityPages; i += 1) {
-    arrBtn.push(`<button type="button" class="pag-btn pag-btn">${i}</button>`);
-  }
-  // arrBtn.splice(
-  //   0,
-  //   1,
-  //   `<button type="button" class="pag-btn pag-btn additional-btn">...</button>`
-  // );
-  arrBtn.splice(
-    quantMobbtn - 1,
-    1,
-    `<button type="button" class="pag-btn pag-btn btn-active">${quantityPages}</button>`
-  );
-  const endSetPages = arrBtn.join('');
-  return endSetPages;
-}
+export { setCardsLimit, setCardsLimitResizer, defaultData };

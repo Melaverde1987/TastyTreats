@@ -3,7 +3,7 @@ import './js/mobile-menu.js';
 import './js/hero-fetch.js';
 import './js/swiper.js';
 
-import './js/grid-card-fetch.js';
+//import './js/grid-card-fetch.js';
 import './js/filters-fetch.js';
 import './js/categories-fetch.js';
 import './js/pagination.js';
