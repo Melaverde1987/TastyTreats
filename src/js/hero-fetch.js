@@ -1,6 +1,6 @@
 import { fetchEvents } from './API/hero-api.js';
-import { swiper } from './swiper';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { initSwiper } from './swiper.js';
 
 const elements = {
   heroCard: document.querySelector('.swiper-hero'),
@@ -15,11 +15,12 @@ async function heroData() {
   try {
     const result = await fetchEvents();
     elements.swiperWrapper.innerHTML = createMarkupEvents(result);
-  } catch {
+    initSwiper();
+  } catch (error) {
+    console.log(error);
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
 
-  // Відмальовка HTML колекції
   function createMarkupEvents(arr) {
     return arr
       .map(

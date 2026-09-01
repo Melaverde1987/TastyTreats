@@ -47,7 +47,7 @@ async function defaultData() {
     elements.cards.innerHTML = createMarkupGridCard(result.results);
     loader.classList.add('hidden');
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
 }

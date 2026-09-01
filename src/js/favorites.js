@@ -47,9 +47,15 @@ async function setFavorites(id) {
     localStorage.setItem('favoriteRecipes', JSON.stringify(storedFavorites));
     Notify.success('Recipe added to favorites!');
   } catch (error) {
-    //console.log(error);
+    console.log(error);
   }
 }
+
+/*
+==========================
+RENDER ON FAVORITES PAGE
+==========================
+*/
 
 renderFavoriteRecipes();
 
@@ -58,3 +64,15 @@ function renderFavoriteRecipes() {
     favoritesCardContainer.innerHTML = createMarkupGridCard(storedFavorites);
   }
 }
+
+const favCategories = [];
+
+storedFavorites.forEach(cat => {
+  favCategories.push(cat.category);
+});
+
+const uniqueCats = favCategories.filter(
+  (cat, index, array) => array.indexOf(cat) === index
+);
+
+console.log(uniqueCats);

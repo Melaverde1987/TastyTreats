@@ -41,7 +41,7 @@
       background: transparent;
 
       &:hover,
-      &:focus {
+      &.active {
         color: $colorPrimary;
       }
     }

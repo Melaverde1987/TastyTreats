@@ -19,11 +19,14 @@ let allRecipes = null;
 let timeSlimSelect;
 let areaSlimSelect;
 let ingredientsSlimSelect;
+let catValue = '';
 
 const loader = document.querySelector('.loader');
 
 const elements = {
   cards: document.querySelector('.list-recipes'),
+  categories: document.querySelector('.categories-list'),
+  btnAllCategories: document.querySelector('.btn-all-categories'),
   searchInput: document.querySelector('.filter-search'),
   resetButton: document.querySelector('.js-reset-filters'),
   selectTimeButton: document.querySelector('#time-select'),
@@ -36,6 +39,10 @@ const elements = {
 EVENT LISTENERS
 ====================
 */
+
+if (elements.categories) {
+  elements.categories.addEventListener('click', getFilterCategory);
+}
 
 if (elements.searchInput) {
   elements.searchInput.addEventListener(
@@ -107,6 +114,10 @@ async function renderFilteredRecipes() {
     const limit = getCurrentLimit();
 
     const filteredRecipes = recipes.filter(recipe => {
+      const matchesCategory = recipe.category
+        .toLowerCase()
+        .includes(catValue.toLowerCase());
+
       const matchesName =
         !filters.name || recipe.title.toLowerCase().includes(filters.name);
 
@@ -121,7 +132,13 @@ async function renderFilteredRecipes() {
           ingredient => ingredient.id === filters.ingredient
         );
 
-      return matchesName && matchesArea && matchesTime && matchesIngredient;
+      return (
+        matchesCategory &&
+        matchesName &&
+        matchesArea &&
+        matchesTime &&
+        matchesIngredient
+      );
     });
 
     if (filteredRecipes.length === 0) {
@@ -154,6 +171,29 @@ async function renderFilteredRecipes() {
 
 /*
 ====================
+CATEGORY
+====================
+*/
+
+function getFilterCategory(e) {
+  if (!e.target.classList.contains('category-btn')) {
+    return;
+  }
+
+  const catBtns = elements.categories.querySelectorAll('.category-btn');
+
+  catBtns.forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  e.target.classList.add('active');
+  catValue = e.target.textContent.trim();
+
+  renderFilteredRecipes();
+}
+
+/*
+====================
 SEARCH
 ====================
 */
@@ -169,11 +209,7 @@ function getQueryNameRecipes(e) {
     return;
   }
 
-  cardsWithSearchData(inputValue, currentlimit);
-}
-
-async function cardsWithSearchData() {
-  await renderFilteredRecipes();
+  renderFilteredRecipes();
 }
 
 /*
@@ -187,11 +223,7 @@ function getFilterArea(e) {
 
   if (selectValue === '') return;
 
-  cardsWithFiltersAreaData(selectValue, currentlimit);
-}
-
-async function cardsWithFiltersAreaData(selectedArea, currentLimit) {
-  await renderFilteredRecipes();
+  renderFilteredRecipes();
 }
 
 /*
@@ -205,11 +237,7 @@ function getFilterTime(e) {
 
   if (selectValue === '') return;
 
-  cardsWithFiltersTimeData(selectValue, currentlimit);
-}
-
-async function cardsWithFiltersTimeData(selectedTime, currentLimit) {
-  await renderFilteredRecipes();
+  renderFilteredRecipes();
 }
 
 /*
@@ -240,9 +268,32 @@ function clearFilters(e) {
     areaSlimSelect.setSelected(['']);
     ingredientsSlimSelect.setSelected(['']);
 
-    elements.cards.innerHTML = defaultData(currentPage, currentlimit);
+    if (catValue != '') {
+      renderFilteredRecipes();
+    } else {
+      elements.cards.innerHTML = defaultData(currentPage, currentlimit);
+    }
     elements.resetButton.classList.add('hidden');
   }
+}
+
+/*
+===================
+CLEAR CATEGORIS
+===================
+*/
+
+elements.btnAllCategories.addEventListener('click', onAllRecipes);
+
+function onAllRecipes() {
+  catValue = '';
+
+  const catBtns = elements.categories.querySelectorAll('.category-btn');
+  catBtns.forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  renderFilteredRecipes();
 }
 
 /*
@@ -311,7 +362,8 @@ async function selectAreaData() {
         showSearch: false,
       },
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     Notify.failure('Oops! Filters went wrong! Try reloading the page!');
   }
 }
@@ -347,7 +399,8 @@ async function selectIngredientsData() {
         showSearch: false,
       },
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     Notify.failure('Oops! Filters went wrong! Try reloading the page!');
   }
 }

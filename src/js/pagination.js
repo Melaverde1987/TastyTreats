@@ -83,9 +83,8 @@ async function defaultData(page, limit) {
 
     renderPagination();
   } catch (error) {
-    Notify.failure('Oops! Something went wrong! Try reloading the page!');
-
     console.log(error);
+    Notify.failure('Oops! Something went wrong! Try reloading the page!');
   } finally {
     loader.classList.add('hidden');
   }

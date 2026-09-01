@@ -19,8 +19,7 @@
   border: 1px solid $colorPrimary;
   transition: color 400ms $cubicTransition;
 
-  &:hover,
-  &:focus {
+  &:hover {
     color: $colorTextDark;
   }
 }
@@ -31,8 +30,7 @@
   color: $colorTextDark;
   transition: all 400ms $cubicTransition;
 
-  &:hover,
-  &:focus {
+  &:hover {
     border: 1px solid $colorPrimary;
     color: $white;
     background-color: $colorPrimary;
@@ -45,8 +43,7 @@
   color: $colorTextGray;
   transition: all 400ms $cubicTransition;
 
-  &:hover,
-  &:focus {
+  &:hover {
     border-color: $colorPrimary;
     color: $white;
     background-color: $colorPrimary;

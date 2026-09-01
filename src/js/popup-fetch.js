@@ -25,7 +25,8 @@ async function handleClick(event) {
       const result = await fetchPopup(id);
       currentRecipe.innerHTML = createMarkupPopup(result);
       popup.classList.remove('is-hidden');
-    } catch {
+    } catch (error) {
+      console.log(error);
       Notify.failure('Oops! Something went wrong! Try reloading the page!');
     }
   }

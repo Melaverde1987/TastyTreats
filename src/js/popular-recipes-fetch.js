@@ -24,6 +24,7 @@ async function handleClick(event) {
       //console.log('response', response);
       currentRecipe.innerHTML = createMarkupPopup(response);
     } catch (error) {
+      console.log(error);
       Notify.failure('Oops! Something went wrong! Try reloading the page!');
     }
   }
@@ -58,7 +59,8 @@ async function popularData() {
 
       getList = document.querySelectorAll('.popular-recipes-list');
     }
-  } catch {
+  } catch (error) {
+    console.log(error);
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
 
