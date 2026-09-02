@@ -1,5 +1,6 @@
 import { fetchCategories } from './API/categories-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { createMarkupCategories } from './markup-card';
 
 const categoriesAll = document.querySelector('.categories-list');
 
@@ -14,15 +15,4 @@ async function categoriesData() {
     console.log(error);
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
-}
-
-function createMarkupCategories(data) {
-  return data
-    .map(
-      item => `
-      <li class="categories-element" data-id=${item._id}>
-        <button class="category-btn" type="button">${item.name}</button>
-      </li>`
-    )
-    .join('');
 }

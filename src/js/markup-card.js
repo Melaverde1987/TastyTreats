@@ -61,4 +61,31 @@ function markupRatingStars(roundRating) {
   ).join('');
 }
 
-export { storedFavorites, createMarkupGridCard };
+function createMarkupCategories(data) {
+  return data
+    .map(
+      item => `
+      <li class="categories-element" data-id=${item._id}>
+        <button class="category-btn" type="button">${item.name}</button>
+      </li>`
+    )
+    .join('');
+}
+
+function createMarkupCategoriesFavorites(data) {
+  return data
+    .map(
+      item => `
+      <li class="categories-element" data-id=${item._id}>
+        <button class="btn btn-outline-gray" type="button">${item.name}</button>
+      </li>`
+    )
+    .join('');
+}
+
+export {
+  storedFavorites,
+  createMarkupGridCard,
+  createMarkupCategories,
+  createMarkupCategoriesFavorites,
+};

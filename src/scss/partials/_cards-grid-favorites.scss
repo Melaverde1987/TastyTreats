@@ -1,6 +1,18 @@
 @use '../general/variables' as *;
 
 .cards-grid-favorites {
+  padding-block: 40px;
+
+  @media only screen and (min-width: 1200px) {
+    padding-block: 60px;
+  }
+
+  .categories-list-favorites {
+    margin-bottom: 32px;
+    display: flex;
+    gap: 15px;
+  }
+
   .list-recipes-favorites {
     display: flex;
     flex-wrap: wrap;
