@@ -5,8 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/TastyTreats/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tasty Treats</title>
-    <script type="module" crossorigin src="/TastyTreats/assets/popup-0cdf4465.js"></script>
-    <link rel="stylesheet" href="/TastyTreats/assets/popup-0f0057c9.css">
+    <script type="module" crossorigin src="/TastyTreats/assets/favorites-75373b7b.js"></script>
+    <link rel="modulepreload" crossorigin href="/TastyTreats/assets/filters-api-83c79888.js">
+    <link rel="stylesheet" href="/TastyTreats/assets/filters-api-0f0057c9.css">
+    <link rel="stylesheet" href="/TastyTreats/assets/favorites-88da730b.css">
   </head>
   <body>
     <header class="header">
@@ -107,6 +109,7 @@
 
     <section class="cards-grid-favorites">
   <div class="container">
+    <div class="loader hidden"></div>
     <ul class="categories-list-favorites">
       <li class="categories-element">
         <button type="button" class="btn btn-outline-gray btn-all-categories">
@@ -116,6 +119,7 @@
     </ul>
 
     <ul class="list-recipes-favorites"></ul>
+    <div id="tui-pagination-container" class="tui-pagination"></div>
   </div>
 </section>
 
