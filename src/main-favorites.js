@@ -4,3 +4,6 @@ import './js/theme-switcher.js';
 import './js/favorites.js';
 import './js/popup-fetch.js';
 import './js/popup.js';
+import './js/categories-favorites-fetch.js';
+import './js/filters-category.js';
+import './js/tui-pagination.js';

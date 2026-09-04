@@ -11,10 +11,11 @@ https://tasty-treats-backend.p.goit.global/api/recipes?category=Beef&page=1&limi
 const fetchCardsWithFilters = async () => {
   const params = new URLSearchParams({
     page: 1,
-    limit: 10000,
+    limit: 1000,
   });
 
   const response = await axios.get(`${BASE_URL}${FILTERS_ENDPOINT}?${params}`);
+  console.log(response.data);
   return response.data.results;
 };
 

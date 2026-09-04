@@ -14,7 +14,6 @@ import 'slim-select/styles';
 
 let currentPage = 1;
 let currentlimit = 6;
-let allRecipes = null;
 
 let timeSlimSelect;
 let areaSlimSelect;
@@ -88,14 +87,6 @@ function getCurrentLimit() {
   return currentlimit;
 }
 
-async function getAllRecipes() {
-  if (!allRecipes) {
-    allRecipes = await fetchCardsWithFilters();
-  }
-
-  return allRecipes;
-}
-
 function getActiveFilters() {
   return {
     name: elements.searchInput.value.trim().toLowerCase(),
@@ -106,10 +97,10 @@ function getActiveFilters() {
 }
 
 async function renderFilteredRecipes() {
-  try {
-    loader.classList.remove('hidden');
+  loader.classList.remove('hidden');
 
-    const recipes = await getAllRecipes();
+  try {
+    const recipes = await fetchCardsWithFilters();
     const filters = getActiveFilters();
     const limit = getCurrentLimit();
 

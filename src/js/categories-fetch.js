@@ -4,7 +4,7 @@ import { createMarkupCategories } from './markup-card';
 
 const categoriesAll = document.querySelector('.categories-list');
 
-categoriesData();
+if (categoriesAll) categoriesData();
 
 async function categoriesData() {
   try {

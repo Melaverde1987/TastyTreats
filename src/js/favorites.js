@@ -1,19 +1,12 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import {
-  storedFavorites,
-  createMarkupGridCard,
-  createMarkupCategoriesFavorites,
-} from './markup-card';
+import { storedFavorites } from './markup-card';
 
 import { fetchCards } from './API/grid-cards-api';
-import { fetchCategories } from './API/categories-api';
 
 const listRecipe = document.querySelector('.list-recipes');
 const favoritesCardContainer = document.querySelector(
   '.list-recipes-favorites'
 );
-const categoriesAll = document.querySelector('.categories-list-favorites');
-const favDefault = document.querySelector('.favorites-default');
 
 if (listRecipe) {
   listRecipe.addEventListener('click', onClickFavorite);
@@ -55,45 +48,5 @@ async function setFavorites(id) {
     Notify.success('Recipe added to favorites!');
   } catch (error) {
     console.log(error);
-  }
-}
-
-/*
-==========================
-RENDER ON FAVORITES PAGE
-==========================
-*/
-
-if (favoritesCardContainer) renderFavoriteRecipes();
-
-function renderFavoriteRecipes() {
-  favDefault.classList.add('is-hidden');
-  favoritesCardContainer.innerHTML = createMarkupGridCard(storedFavorites);
-}
-
-const favCategories = [];
-
-storedFavorites.forEach(cat => {
-  favCategories.push(cat.category.toLowerCase());
-});
-
-const uniqueCats = favCategories.filter(
-  (cat, index, array) => array.indexOf(cat) === index
-);
-
-if (categoriesAll) categoriesDataFavorites();
-
-async function categoriesDataFavorites() {
-  try {
-    const result = await fetchCategories();
-    const filtered = result.filter(category =>
-      uniqueCats.includes(category.name.toLowerCase())
-    );
-
-    const categoriesList = createMarkupCategoriesFavorites(filtered);
-    categoriesAll.insertAdjacentHTML('beforeend', categoriesList);
-  } catch (error) {
-    console.log(error);
-    Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
 }
