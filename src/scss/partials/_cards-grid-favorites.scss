@@ -1,4 +1,5 @@
 @use '../general/variables' as *;
+@use '../general/mixin' as mixin;
 
 .cards-grid-favorites {
   padding-block: 40px;
@@ -7,10 +8,35 @@
     padding-block: 60px;
   }
 
-  .categories-list-favorites {
+  .categories-list-wrapper {
+    margin-right: -20px;
+    overflow-x: auto;
     margin-bottom: 32px;
-    display: flex;
-    gap: 15px;
+    padding-bottom: 8px;
+    @include mixin.scrollbar(4px);
+
+    @media only screen and (min-width: 768px) {
+      margin-right: -32px;
+    }
+
+    .categories-list-favorites {
+      display: flex;
+      gap: 15px;
+      white-space: nowrap;
+
+      .js-fav-cat {
+        &.active {
+          background: $colorPrimary;
+          color: $white;
+          border: 1px solid $colorPrimary;
+          transition: color 400ms $cubicTransition;
+
+          &:hover {
+            color: $colorTextDark;
+          }
+        }
+      }
+    }
   }
 
   .list-recipes-favorites {

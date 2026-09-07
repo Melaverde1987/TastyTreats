@@ -15,7 +15,6 @@ const fetchCardsWithFilters = async () => {
   });
 
   const response = await axios.get(`${BASE_URL}${FILTERS_ENDPOINT}?${params}`);
-  console.log(response.data);
   return response.data.results;
 };
 

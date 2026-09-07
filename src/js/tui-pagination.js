@@ -1,5 +1,5 @@
 import Pagination from 'tui-pagination';
-import 'tui-pagination/dist/tui-pagination.css';
+//import 'tui-pagination/dist/tui-pagination.css';
 
 const paginationContainer = document.getElementById('tui-pagination-container');
 

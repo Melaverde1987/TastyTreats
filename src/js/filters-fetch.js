@@ -192,13 +192,7 @@ SEARCH
 function getQueryNameRecipes(e) {
   const inputValue = e.target.value.trim();
 
-  if (inputValue === '') {
-    //elements.resetButton.classList.add('hidden');
-    cardsWithSearchData();
-
-    //Notify.info('Your query is empty. Please try again');
-    return;
-  }
+  //if (inputValue === '') return;
 
   renderFilteredRecipes();
 }
@@ -212,7 +206,7 @@ AREA FILTER
 function getFilterArea(e) {
   const selectValue = e.target.value.trim();
 
-  if (selectValue === '') return;
+  //if (selectValue === '') return;
 
   renderFilteredRecipes();
 }
@@ -226,7 +220,7 @@ TIME FILTER
 function getFilterTime(e) {
   const selectValue = e.target.value.trim();
 
-  if (selectValue === '') return;
+  //if (selectValue === '') return;
 
   renderFilteredRecipes();
 }
@@ -240,7 +234,7 @@ INGREDIENT FILTER
 function getFilterIngredients(e) {
   const selectValue = e.target.value.trim();
 
-  if (selectValue === '') return;
+  //if (selectValue === '') return;
 
   renderFilteredRecipes();
 }

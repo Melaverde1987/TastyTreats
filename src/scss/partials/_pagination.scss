@@ -1,5 +1,87 @@
 @use '../general/variables' as *;
 
+.tui-pagination {
+  display: flex;
+  width: 100%;
+  gap: 14px;
+  justify-content: center;
+
+  .tui-page-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: $dark;
+    border: 1px solid $colorBorder;
+
+    &:hover {
+      background-color: rgba(155, 181, 55, 0.6);
+      border: transparent;
+      outline: none;
+    }
+
+    &:active {
+      border: transparent;
+      background-color: rgba(155, 181, 55, 0.4);
+    }
+
+    &.tui-is-selected {
+      background-color: $colorPrimary;
+      border: none;
+    }
+
+    &.tui-first,
+    &.tui-prev {
+      background-color: $colorTextDark;
+      color: $colorBody;
+    }
+
+    &.tui-first {
+      background-image: url('../img/svg/chevrons-left.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    &.tui-prev {
+      background-image: url('../img/svg/chevron-left.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    &.tui-next,
+    &.tui-last {
+      background-color: $colorPrimary;
+      color: $dark;
+    }
+
+    &.tui-next {
+      background-image: url('../img/svg/chevrons-right.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    &.tui-last {
+      background-image: url('../img/svg/chevron-right.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .tui-ico-first,
+    .tui-ico-prev,
+    .tui-ico-next,
+    .tui-ico-last {
+      text-indent: -99999px;
+    }
+  }
+}
+
 .pagination-wrap {
   display: flex;
   width: 100%;
