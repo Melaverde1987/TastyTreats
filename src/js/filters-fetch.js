@@ -1,24 +1,20 @@
-import {
-  fetchCardsWithFilters,
-  fetchAreas,
-  fetchIngredients,
-} from './API/filters-api';
+import { fetchCardsWithFilters } from './API/filters-api';
 
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { debounce } from 'debounce';
-import { defaultData } from './pagination';
+
+import { defaultData, getItemsPerPage } from './grid-card-fetch';
 import { createMarkupGridCard } from './markup-card';
+import { getPagination, updatePagination } from './tui-pagination';
+import {
+  timeSlimSelect,
+  areaSlimSelect,
+  ingredientsSlimSelect,
+} from './render-filters';
 
-import SlimSelect from 'slim-select';
-import 'slim-select/styles';
-
-let currentPage = 1;
-let currentlimit = 6;
-
-let timeSlimSelect;
-let areaSlimSelect;
-let ingredientsSlimSelect;
 let catValue = '';
+let isFilterMode = false;
+let paginationListenerAdded = false;
 
 const loader = document.querySelector('.loader');
 
@@ -33,130 +29,215 @@ const elements = {
   selectIngredientsButton: document.querySelector('#ingredients-select'),
 };
 
+if (elements.cards) {
+  init();
+}
+
+function init() {
+  defaultData(1).then(() => {
+    initPaginationListener();
+  });
+
+  initEventListeners();
+  initResize();
+}
+
+/*
+====================
+PAGINATION
+====================
+*/
+
+function initPaginationListener() {
+  if (paginationListenerAdded) {
+    return;
+  }
+
+  const pagination = getPagination();
+
+  if (!pagination) {
+    return;
+  }
+
+  pagination.on('afterMove', event => {
+    if (isFilterMode) {
+      renderFilteredRecipes(event.page);
+    } else {
+      defaultData(event.page);
+    }
+  });
+
+  paginationListenerAdded = true;
+}
+
+/*
+====================
+RESPONSIVE
+====================
+*/
+
+function initResize() {
+  let previousLimit = getItemsPerPage();
+
+  window.addEventListener('resize', () => {
+    const newLimit = getItemsPerPage();
+
+    if (newLimit === previousLimit) {
+      return;
+    }
+
+    previousLimit = newLimit;
+
+    if (isFilterMode) {
+      renderFilteredRecipes(1);
+    } else {
+      defaultData(1);
+    }
+  });
+}
+
 /*
 ====================
 EVENT LISTENERS
 ====================
 */
 
-if (elements.categories) {
-  elements.categories.addEventListener('click', getFilterCategory);
-}
+function initEventListeners() {
+  elements.categories?.addEventListener('click', getFilterCategory);
 
-if (elements.searchInput) {
-  elements.searchInput.addEventListener(
+  elements.searchInput?.addEventListener(
     'input',
-    debounce(getQueryNameRecipes, 1000)
+    debounce(() => {
+      renderFilteredRecipes(1);
+    }, 1000)
   );
+
+  elements.resetButton?.addEventListener('click', clearFilters);
+
+  elements.selectAreaButton?.addEventListener('change', () => {
+    renderFilteredRecipes(1);
+  });
+
+  elements.selectTimeButton?.addEventListener('change', () => {
+    renderFilteredRecipes(1);
+  });
+
+  elements.selectIngredientsButton?.addEventListener('change', () => {
+    renderFilteredRecipes(1);
+  });
+
+  elements.btnAllCategories?.addEventListener('click', onAllCategories);
 }
 
-if (elements.resetButton) {
-  elements.resetButton.addEventListener('click', clearFilters);
+/*
+====================
+ACTIVE FILTERS
+====================
+*/
+
+function getActiveFilters() {
+  return {
+    name: elements.searchInput?.value.trim().toLowerCase() || '',
+    area: elements.selectAreaButton?.value.trim() || '',
+    time: Number(elements.selectTimeButton?.value) || 0,
+    ingredient: elements.selectIngredientsButton?.value || '',
+  };
 }
 
-if (elements.selectAreaButton) {
-  elements.selectAreaButton.addEventListener('change', getFilterArea);
-}
-
-if (elements.selectTimeButton) {
-  elements.selectTimeButton.addEventListener('change', getFilterTime);
-}
-
-if (elements.selectIngredientsButton) {
-  elements.selectIngredientsButton.addEventListener(
-    'change',
-    getFilterIngredients
+function hasActiveFilters(filters) {
+  return Boolean(
+    //catValue ||
+    filters.name || filters.area || filters.time || filters.ingredient
   );
 }
 
 /*
 ====================
-COMMON FUNCTIONS
+FILTER RECIPES
 ====================
 */
 
-function getCurrentLimit() {
-  if (window.innerWidth >= 1200) {
-    return 9;
-  }
+async function renderFilteredRecipes(page = 1) {
+  loader?.classList.remove('hidden');
 
-  if (window.innerWidth >= 768) {
-    return 8;
-  }
-
-  return currentlimit;
-}
-
-function getActiveFilters() {
-  return {
-    name: elements.searchInput.value.trim().toLowerCase(),
-    area: elements.selectAreaButton.value.trim().toLowerCase(),
-    time: Number(elements.selectTimeButton.value),
-    ingredient: elements.selectIngredientsButton.value,
-  };
-}
-
-async function renderFilteredRecipes() {
-  loader.classList.remove('hidden');
+  isFilterMode = true;
 
   try {
-    const recipes = await fetchCardsWithFilters();
     const filters = getActiveFilters();
-    const limit = getCurrentLimit();
+    const itemsPerPage = getItemsPerPage();
 
-    const filteredRecipes = recipes.filter(recipe => {
-      const matchesCategory = recipe.category
-        .toLowerCase()
-        .includes(catValue.toLowerCase());
+    const hasNameFilter = Boolean(filters.name);
 
-      const matchesName =
-        !filters.name || recipe.title.toLowerCase().includes(filters.name);
-
-      const matchesArea =
-        !filters.area || recipe.area.toLowerCase().includes(filters.area);
-
-      const matchesTime = !filters.time || Number(recipe.time) <= filters.time;
-
-      const matchesIngredient =
-        !filters.ingredient ||
-        recipe.ingredients.some(
-          ingredient => ingredient.id === filters.ingredient
-        );
-
-      return (
-        matchesCategory &&
-        matchesName &&
-        matchesArea &&
-        matchesTime &&
-        matchesIngredient
-      );
+    const recipes = await fetchCardsWithFilters({
+      category: catValue,
+      page: hasNameFilter ? 1 : page,
+      limit: hasNameFilter ? 1000 : itemsPerPage,
+      time: filters.time,
+      area: filters.area,
+      ingredient: filters.ingredient,
     });
 
-    if (filteredRecipes.length === 0) {
-      elements.cards.innerHTML = defaultData(currentPage, currentlimit);
+    let filteredRecipes = recipes.results;
+
+    // SEARCH BY NAME
+
+    if (hasNameFilter) {
+      filteredRecipes = filteredRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(filters.name)
+      );
+    }
+
+    // NOTHING FOUND
+
+    if (!filteredRecipes.length) {
+      elements.cards.innerHTML = '';
+
+      updatePagination({
+        totalItems: 0,
+        itemsPerPage,
+      });
+
+      updateResetButton(filters);
       Notify.warning('Nothing was found for your request!');
       return;
     }
 
-    const recipesOnPage = filteredRecipes.slice(0, limit);
+    // NAME FILTER
 
-    elements.cards.innerHTML = createMarkupGridCard(recipesOnPage);
-    elements.resetButton.classList.remove('hidden');
+    if (hasNameFilter) {
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
 
-    if (
-      filters.name === '' &&
-      filters.area == false &&
-      filters.time == false &&
-      filters.ingredient == false
-    ) {
-      elements.resetButton.classList.add('hidden');
+      elements.cards.innerHTML = createMarkupGridCard(
+        filteredRecipes.slice(start, end)
+      );
+
+      updatePagination({
+        totalItems,
+        itemsPerPage,
+        reset: page === 1,
+      });
+    } else {
+      elements.cards.innerHTML = createMarkupGridCard(filteredRecipes);
+
+      const totalItems = recipes.totalPages * itemsPerPage;
+
+      updatePagination({
+        totalItems,
+        itemsPerPage,
+        reset: page === 1,
+      });
     }
+
+    initPaginationListener();
+
+    updateResetButton(filters);
   } catch (error) {
     console.error(error);
 
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   } finally {
-    loader.classList.add('hidden');
+    loader?.classList.add('hidden');
   }
 }
 
@@ -166,77 +247,48 @@ CATEGORY
 ====================
 */
 
-function getFilterCategory(e) {
-  if (!e.target.classList.contains('category-btn')) {
+function getFilterCategory(event) {
+  const categoryBtn = event.target.closest('.category-btn');
+
+  if (!categoryBtn) {
     return;
   }
 
-  const catBtns = elements.categories.querySelectorAll('.category-btn');
+  const categoryBtns = elements.categories.querySelectorAll('.category-btn');
 
-  catBtns.forEach(btn => {
+  categoryBtns.forEach(btn => {
     btn.classList.remove('active');
   });
 
-  e.target.classList.add('active');
-  catValue = e.target.textContent.trim();
-
-  renderFilteredRecipes();
+  categoryBtn.classList.add('active');
+  catValue = categoryBtn.textContent.trim();
+  renderFilteredRecipes(1);
 }
 
 /*
 ====================
-SEARCH
+ALL CATEGORIES
 ====================
 */
 
-function getQueryNameRecipes(e) {
-  const inputValue = e.target.value.trim();
+function onAllCategories() {
+  catValue = '';
 
-  //if (inputValue === '') return;
+  const categoryBtns = elements.categories?.querySelectorAll('.category-btn');
 
-  renderFilteredRecipes();
-}
+  categoryBtns?.forEach(btn => {
+    btn.classList.remove('active');
+  });
 
-/*
-====================
-AREA FILTER
-====================
-*/
+  const filters = getActiveFilters();
 
-function getFilterArea(e) {
-  const selectValue = e.target.value.trim();
-
-  //if (selectValue === '') return;
-
-  renderFilteredRecipes();
-}
-
-/*
-====================
-TIME FILTER
-====================
-*/
-
-function getFilterTime(e) {
-  const selectValue = e.target.value.trim();
-
-  //if (selectValue === '') return;
-
-  renderFilteredRecipes();
-}
-
-/*
-====================
-INGREDIENT FILTER
-====================
-*/
-
-function getFilterIngredients(e) {
-  const selectValue = e.target.value.trim();
-
-  //if (selectValue === '') return;
-
-  renderFilteredRecipes();
+  if (hasActiveFilters(filters)) {
+    renderFilteredRecipes(1);
+  } else {
+    isFilterMode = false;
+    defaultData(1);
+    //elements.resetButton?.classList.add('hidden');
+  }
 }
 
 /*
@@ -245,162 +297,34 @@ CLEAR FILTERS
 ====================
 */
 
-function clearFilters(e) {
-  if (e.target) {
+function clearFilters() {
+  if (elements.searchInput) {
     elements.searchInput.value = '';
-
-    timeSlimSelect.setSelected(['']);
-    areaSlimSelect.setSelected(['']);
-    ingredientsSlimSelect.setSelected(['']);
-
-    if (catValue != '') {
-      renderFilteredRecipes();
-    } else {
-      elements.cards.innerHTML = defaultData(currentPage, currentlimit);
-    }
-    elements.resetButton.classList.add('hidden');
   }
-}
 
-/*
-===================
-CLEAR CATEGORIS
-===================
-*/
+  timeSlimSelect?.setSelected(['']);
+  areaSlimSelect?.setSelected(['']);
+  ingredientsSlimSelect?.setSelected(['']);
 
-elements.btnAllCategories.addEventListener('click', onAllRecipes);
+  const categoryBtns = elements.categories?.querySelectorAll('.category-btn');
 
-function onAllRecipes() {
-  catValue = '';
-
-  const catBtns = elements.categories.querySelectorAll('.category-btn');
-  catBtns.forEach(btn => {
+  categoryBtns?.forEach(btn => {
     btn.classList.remove('active');
   });
 
-  renderFilteredRecipes();
+  catValue = '';
+  isFilterMode = false;
+
+  elements.resetButton?.classList.add('hidden');
+  defaultData(1);
 }
 
 /*
 ====================
-SET SELECT TIME
+RESET BUTTON
 ====================
 */
 
-if (elements.selectTimeButton) {
-  const selectTime = [];
-
-  for (let time = 5; time <= 160; time += 5) {
-    selectTime.push(time);
-  }
-
-  elements.selectTimeButton.insertAdjacentHTML(
-    'beforeend',
-    createMarkupSelectTime(selectTime)
-  );
-
-  timeSlimSelect = new SlimSelect({
-    select: elements.selectTimeButton,
-    settings: {
-      showSearch: false,
-    },
-  });
-}
-
-function createMarkupSelectTime(arr) {
-  return arr
-    .map(
-      time => `
-        <option
-          class="filter-select-option"
-          value="${time}"
-        >
-          ${time} min
-        </option>
-      `
-    )
-    .join('');
-}
-
-/*
-====================
-SET SELECT AREA
-====================
-*/
-
-if (elements.selectAreaButton) {
-  selectAreaData();
-}
-
-async function selectAreaData() {
-  try {
-    const result = await fetchAreas();
-
-    elements.selectAreaButton.insertAdjacentHTML(
-      'beforeend',
-      createMarkupSelectArea(result)
-    );
-
-    areaSlimSelect = new SlimSelect({
-      select: elements.selectAreaButton,
-      settings: {
-        showSearch: false,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    Notify.failure('Oops! Filters went wrong! Try reloading the page!');
-  }
-}
-
-function createMarkupSelectArea(arr) {
-  return arr
-    .map(({ name }) => `<option value="${name}">${name}</option>`)
-    .join('');
-}
-
-/*
-====================
-SET SELECT INGREDIENTS
-====================
-*/
-
-if (elements.selectIngredientsButton) {
-  selectIngredientsData();
-}
-
-async function selectIngredientsData() {
-  try {
-    const result = await fetchIngredients();
-
-    elements.selectIngredientsButton.insertAdjacentHTML(
-      'beforeend',
-      createMarkupSelectIngredients(result)
-    );
-
-    ingredientsSlimSelect = new SlimSelect({
-      select: elements.selectIngredientsButton,
-      settings: {
-        showSearch: false,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    Notify.failure('Oops! Filters went wrong! Try reloading the page!');
-  }
-}
-
-function createMarkupSelectIngredients(arr) {
-  return arr
-    .map(
-      ({ _id, name }) => `
-        <option
-          class="filter-select-option"
-          value="${_id}"
-        >
-          ${name}
-        </option>
-      `
-    )
-    .join('');
+function updateResetButton(filters) {
+  elements.resetButton?.classList.toggle('hidden', !hasActiveFilters(filters));
 }

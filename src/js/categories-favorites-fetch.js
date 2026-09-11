@@ -1,4 +1,4 @@
-import { fetchCategories } from './API/categories-api';
+import { fetchCards } from './API/grid-cards-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import {
   createMarkupCategoriesFavorites,
@@ -16,29 +16,29 @@ if (storedFavorites.length === 0) {
   favDefault.classList.remove('is-hidden');
 } else {
   favDefault.classList.add('is-hidden');
+  renderFavoriteCategories();
 }
-
-storedFavorites.forEach(cat => {
-  favCategories.push(cat.category.toLowerCase());
-});
-
-const uniqueCats = favCategories.filter(
-  (cat, index, array) => array.indexOf(cat) === index
-);
-
-if (categoriesAllFav) renderFavoriteCategories();
 
 async function renderFavoriteCategories() {
   try {
-    const result = await fetchCategories();
-    const filtered = result.filter(category =>
-      uniqueCats.includes(category.name.toLowerCase())
+    const result = await fetchCards(1, 1000);
+    const filteredRecipes = result.results.filter(item =>
+      storedFavorites.includes(item._id)
     );
 
-    const categoriesList = createMarkupCategoriesFavorites(filtered);
+    filteredRecipes.forEach(cat => {
+      favCategories.push({ id: cat._id, name: cat.category });
+    });
+
+    const uniqueCats = favCategories.filter(
+      (cat, index, array) =>
+        array.findIndex(item => item.name === cat.name) === index
+    );
+
+    const categoriesList = createMarkupCategoriesFavorites(uniqueCats);
     categoriesAllFav.insertAdjacentHTML('beforeend', categoriesList);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
 }

@@ -1,7 +1,11 @@
-import { fetchCardsWithFilters } from './API/filters-api';
+import { fetchCards } from './API/grid-cards-api';
 import { createMarkupGridCard, storedFavorites } from './markup-card';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { createPagination } from './tui-pagination';
+import {
+  renderFavoriteRecipes,
+  getItemsPerPage,
+} from './grid-card-favorites-fetch';
+import { getPagination, updatePagination } from './tui-pagination';
 
 const categoriesAllFav = document.querySelector('.categories-list-favorites');
 const loader = document.querySelector('.loader');
@@ -9,61 +13,91 @@ const cards = document.querySelector('.list-recipes-favorites');
 const btnAllCategories = document.querySelector('.btn-all-categories');
 
 let catValue = '';
-let itemsPerPage = 4;
-let filteredRecipes = [];
-let pagination;
-
-setCardsLimit();
-
-if (categoriesAllFav) {
-  categoriesAllFav.addEventListener('click', getFilterCategory);
-}
-
-if (btnAllCategories) {
-  btnAllCategories.addEventListener('click', onAllRecipes);
-}
+let isFilterMode = false;
+let paginationListenerAdded = false;
 
 if (cards) {
-  showAllFavorites();
+  init();
+}
+
+function init() {
+  renderFavoriteRecipes(1).then(() => {
+    initPaginationListener();
+  });
+
+  initEventListeners();
+  initResize();
 }
 
 /*
-===================
-RESPONSIVE LIMIT
-===================
+====================
+PAGINATION
+====================
 */
 
-function setCardsLimit() {
-  updateItemsPerPage();
+function initPaginationListener() {
+  if (paginationListenerAdded) {
+    return;
+  }
+
+  const pagination = getPagination();
+
+  if (!pagination) {
+    return;
+  }
+
+  pagination.on('afterMove', event => {
+    if (isFilterMode) {
+      renderFilteredCatRecipes(event.page);
+    } else {
+      renderFavoriteRecipes(event.page);
+    }
+  });
+
+  paginationListenerAdded = true;
+}
+
+/*
+====================
+EVENT LISTENERS
+====================
+*/
+
+function initEventListeners() {
+  categoriesAllFav?.addEventListener('click', getFilterCategory);
+  btnAllCategories?.addEventListener('click', onAllRecipes);
+}
+
+/*
+====================
+RESPONSIVE
+====================
+*/
+
+function initResize() {
+  let previousLimit = getItemsPerPage();
 
   window.addEventListener('resize', () => {
-    const previousLimit = itemsPerPage;
+    const newLimit = getItemsPerPage();
 
-    updateItemsPerPage();
+    if (newLimit === previousLimit) {
+      return;
+    }
 
-    if (previousLimit !== itemsPerPage) {
-      updatePagination(filteredRecipes.length);
-      renderRecipesPage(1);
+    previousLimit = newLimit;
+
+    if (isFilterMode) {
+      renderFilteredCatRecipes(1);
+    } else {
+      renderFavoriteRecipes(1);
     }
   });
 }
 
-function updateItemsPerPage() {
-  const width = window.innerWidth;
-
-  if (width >= 1200) {
-    itemsPerPage = 8;
-  } else if (width >= 768) {
-    itemsPerPage = 6;
-  } else {
-    itemsPerPage = 4;
-  }
-}
-
 /*
-===================
+====================
 CATEGORY FILTER
-===================
+====================
 */
 
 function getFilterCategory(event) {
@@ -74,104 +108,86 @@ function getFilterCategory(event) {
   }
 
   removeActiveCategory();
+
   categoryBtn.classList.add('active');
   catValue = categoryBtn.textContent.trim();
-  renderFilteredCatRecipes();
+  isFilterMode = true;
+  renderFilteredCatRecipes(1);
 }
 
-async function renderFilteredCatRecipes() {
+/*
+====================
+FILTER RECIPES
+====================
+*/
+
+async function renderFilteredCatRecipes(page = 1) {
+  loader?.classList.remove('hidden');
+
   try {
-    loader.classList.remove('hidden');
+    const itemsPerPage = getItemsPerPage();
+    const recipes = await fetchCards(1, 1000);
+    const filteredRecipes = recipes.results.filter(recipe => {
+      const isFavorite = storedFavorites.includes(recipe._id);
 
-    const recipes = await fetchCardsWithFilters();
-
-    filteredRecipes = recipes.filter(recipe => {
       const matchesCategory =
         recipe.category.toLowerCase() === catValue.toLowerCase();
 
-      const isFavorite = storedFavorites.some(
-        favorite => favorite._id === recipe._id
-      );
-
-      return matchesCategory && isFavorite;
+      return isFavorite && matchesCategory;
     });
 
     if (!filteredRecipes.length) {
       cards.innerHTML = '';
-      updatePagination(0);
+
+      updatePagination({
+        totalItems: 0,
+        itemsPerPage,
+        reset: true,
+      });
+
       Notify.warning('Nothing was found for your request!');
+
       return;
     }
 
-    updatePagination(filteredRecipes.length);
-    renderRecipesPage(1);
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+
+    cards.innerHTML = createMarkupGridCard(filteredRecipes.slice(start, end));
+
+    updatePagination({
+      totalItems: filteredRecipes.length,
+      itemsPerPage,
+      reset: page === 1,
+    });
   } catch (error) {
     console.error(error);
 
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
   } finally {
-    loader.classList.add('hidden');
+    loader?.classList.add('hidden');
   }
 }
 
 /*
-===================
-CLEAR CATEGORIES
-===================
+====================
+ALL CATEGORIES
+====================
 */
 
 function onAllRecipes() {
   catValue = '';
 
+  isFilterMode = false;
+
   removeActiveCategory();
-  showAllFavorites();
-}
-
-function showAllFavorites() {
-  filteredRecipes = storedFavorites;
-
-  if (!filteredRecipes.length) {
-    cards.innerHTML = '';
-
-    updatePagination(0);
-
-    return;
-  }
-
-  updatePagination(filteredRecipes.length);
-  renderRecipesPage(1);
+  renderFavoriteRecipes(1);
 }
 
 /*
-===================
-PAGINATION
-===================
-*/
-
-function updatePagination(totalItems) {
-  pagination = createPagination({
-    totalItems,
-    itemsPerPage,
-    visiblePages: 3,
-  });
-
-  pagination.on('afterMove', event => {
-    renderRecipesPage(event.page);
-  });
-}
-
-function renderRecipesPage(page = 1) {
-  const start = (page - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-
-  const recipesToRender = filteredRecipes.slice(start, end);
-  cards.innerHTML = createMarkupGridCard(recipesToRender);
-}
-
-/*
-===================
+====================
 HELPERS
-===================
+====================
 */
 
 function removeActiveCategory() {

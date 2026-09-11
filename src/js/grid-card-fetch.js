@@ -1,6 +1,7 @@
 import { fetchCards } from './API/grid-cards-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { createMarkupGridCard } from './markup-card';
+import { updatePagination } from './tui-pagination';
 
 const loader = document.querySelector('.loader');
 
@@ -8,48 +9,45 @@ const elements = {
   cards: document.querySelector('.list-recipes'),
 };
 
-let currentlimit = 6;
-let currentPage = 1;
+function getItemsPerPage() {
+  const width = window.innerWidth;
 
-if (elements.cards) {
-  setCardsLimit();
-}
-
-function setCardsLimit() {
-  if (window.screen.width >= 768 && window.screen.width < 1200) {
-    currentlimit = 8;
-    defaultData();
-  } else if (window.screen.width >= 1200) {
-    currentlimit = 9;
-    defaultData();
+  if (width >= 1200) {
+    return 9;
   }
-  setCardsLimitResizer();
+
+  if (width >= 768) {
+    return 6;
+  }
+
+  return 4;
 }
 
-function setCardsLimitResizer() {
-  window.addEventListener('resize', function () {
-    if (window.screen.width >= 768 && window.screen.width < 1200) {
-      currentlimit = 8;
-      defaultData();
-    } else if (window.screen.width >= 1200) {
-      currentlimit = 9;
-      defaultData();
-    } else {
-      currentlimit = 6;
-      defaultData();
-    }
-  });
-}
+async function defaultData(page = 1) {
+  if (!elements.cards) {
+    return;
+  }
 
-async function defaultData() {
+  loader?.classList.remove('hidden');
+
   try {
-    const result = await fetchCards(currentPage, currentlimit);
+    const itemsPerPage = getItemsPerPage();
+    const result = await fetchCards(page, itemsPerPage);
     elements.cards.innerHTML = createMarkupGridCard(result.results);
-    loader.classList.add('hidden');
+    const totalItems = result.totalPages * itemsPerPage;
+
+    updatePagination({
+      totalItems,
+      itemsPerPage,
+      reset: page === 1,
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+
     Notify.failure('Oops! Something went wrong! Try reloading the page!');
+  } finally {
+    loader?.classList.add('hidden');
   }
 }
 
-export { setCardsLimit, setCardsLimitResizer, defaultData };
+export { defaultData, getItemsPerPage };

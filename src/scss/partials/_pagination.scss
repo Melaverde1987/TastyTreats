@@ -18,7 +18,7 @@
     font-weight: 600;
     font-size: 1.4rem;
     line-height: 1;
-    color: $dark;
+    color: $colorBlack;
     border: 1px solid $colorBorder;
 
     &:hover {
@@ -39,7 +39,7 @@
 
     &.tui-first,
     &.tui-prev {
-      background-color: $colorTextDark;
+      background-color: $black;
       color: $colorBody;
     }
 
@@ -62,13 +62,13 @@
     }
 
     &.tui-next {
-      background-image: url('../img/svg/chevrons-right.svg');
+      background-image: url('../img/svg/chevron-right.svg');
       background-repeat: no-repeat;
       background-position: center;
     }
 
     &.tui-last {
-      background-image: url('../img/svg/chevron-right.svg');
+      background-image: url('../img/svg/chevrons-right.svg');
       background-repeat: no-repeat;
       background-position: center;
     }

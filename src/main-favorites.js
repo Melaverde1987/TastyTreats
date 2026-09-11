@@ -7,4 +7,4 @@ import './js/popup.js';
 import './js/grid-card-favorites-fetch.js';
 import './js/categories-favorites-fetch.js';
 import './js/filters-favorites-category.js';
-import './js/tui-pagination.js';
+//import './js/tui-pagination.js';

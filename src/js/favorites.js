@@ -34,7 +34,10 @@ function onClickFavorite(event) {
       localStorage.setItem('favoriteRecipes', JSON.stringify(storedFavorites));
       Notify.info('Recipe removed from favorites!');
     } else {
-      setFavorites(name);
+      //setFavorites(name);
+      storedFavorites.push(name);
+      localStorage.setItem('favoriteRecipes', JSON.stringify(storedFavorites));
+      Notify.success('Recipe added to favorites!');
     }
   }
 }

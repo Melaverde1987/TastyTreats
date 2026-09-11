@@ -6,9 +6,7 @@ function createMarkupGridCard(arr) {
     .map(({ _id, title, description, rating, thumb }) => {
       const roundRating = Math.round(rating);
       const ratingNumber = Number(rating).toFixed(1);
-      const heartFull = storedFavorites.some(
-        favRecipe => _id === favRecipe._id
-      );
+      const heartFull = storedFavorites.some(favRecipe => _id === favRecipe);
 
       return `
         <li class="item-recipes">

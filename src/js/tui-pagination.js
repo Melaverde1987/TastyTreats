@@ -1,20 +1,44 @@
 import Pagination from 'tui-pagination';
-//import 'tui-pagination/dist/tui-pagination.css';
 
-const paginationContainer = document.getElementById('tui-pagination-container');
+const container = document.getElementById('tui-pagination-container');
 
-function createPagination(options = {}) {
-  const defaultOptions = {
-    totalItems: 0,
-    itemsPerPage: 8,
-    visiblePages: 5,
-    page: 1,
-  };
+let pagination = null;
 
-  return new Pagination(paginationContainer, {
-    ...defaultOptions,
-    ...options,
-  });
+function getPagination(options = {}) {
+  if (!container) {
+    return null;
+  }
+
+  if (!pagination) {
+    pagination = new Pagination(container, {
+      totalItems: 0,
+      itemsPerPage: 4,
+      visiblePages: 3,
+      page: 1,
+      ...options,
+    });
+  }
+
+  return pagination;
 }
 
-export { createPagination };
+function updatePagination({ totalItems, itemsPerPage, reset = true }) {
+  const instance = getPagination({
+    totalItems,
+    itemsPerPage,
+  });
+
+  if (!instance) {
+    return null;
+  }
+
+  instance.setItemsPerPage(itemsPerPage);
+
+  if (reset) {
+    instance.reset(totalItems);
+  }
+
+  return instance;
+}
+
+export { getPagination, updatePagination };
